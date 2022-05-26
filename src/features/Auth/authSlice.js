@@ -6,7 +6,7 @@ const initialState = {
   uid: "",
   email: "",
   photoURL: "",
-  isLoggedIn: true,
+  isLoggedIn: false,
   error: "",
 };
 
