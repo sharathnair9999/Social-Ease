@@ -2,8 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase-config";
 
-// const userDetails = JSON.parse(localStorage.getItem("userDetails") ?  )
-
 const initialState = {
   displayName: "",
   uid: "",

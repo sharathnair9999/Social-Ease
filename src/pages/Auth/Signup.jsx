@@ -1,76 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { constants, debounce, handleChange } from "../../helpers";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Input from "./components/Input";
-import "./Auth.css";
-import { signupUser, userNameExists } from "./helpers";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../../firebase-config";
+import { signupUser, uploadFile, userNameExists } from "./helpers";
 import { Brand } from "../../components";
 import { FiUpload } from "react-icons/fi";
+import Button from "./components/Button";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [isValidDetails, setisValidDetails] = useState(true);
   const [isValidUsername, setIsValidUsername] = useState(true);
   const [file, setFile] = useState("");
-  const [imgUrl, setImgUrl] = useState(constants.imgUrls.userPlaceholder);
   const initialCredentialState = {
     email: "",
     password: "",
     gender: "",
-    photoURL: "",
+    photoURL: constants.imgUrls.userPlaceholder,
     displayName: "",
     username: "",
   };
   const [credentials, setCredentials] = useState(initialCredentialState);
 
   useEffect(() => {
-    const uploadFile = () => {
-      const fileName = new Date().getTime() + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          progress != null && progress < 100
-            ? setisValidDetails(false)
-            : setisValidDetails(true);
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          switch (error.code) {
-            case "storage/unauthorized":
-              break;
-            case "storage/canceled":
-              break;
-            case "storage/unknown":
-              break;
-            default:
-              break;
-          }
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImgUrl(downloadURL);
-          });
-        }
-      );
-    };
-
-    file && uploadFile();
+    file && uploadFile(file, setisValidDetails, setCredentials);
   }, [file]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,105 +36,132 @@ const Signup = () => {
   );
 
   return (
-    <div className="p-4 bg-light-1 h-screen">
-      <Brand full />
-      <form
-        onSubmit={(e) => signupUser(e, navigate, { ...credentials })}
-        className="flex justify-start items-center gap-2 flex-col"
-      >
-        <section className="relative">
-          <img
-            src={imgUrl}
-            alt="userlogo"
-            className="w-full max-w-[5rem] rounded-full h-auto"
-          />
-          <span className="image-upload absolute bottom-[-5px] right-[-5px] ">
-            <input
-              type="file"
-              name="file"
-              id="file"
-              className="inputfile absolute overflow-hidden opacity-0 z-[-1]"
-              onChange={(e) => setFile(e.target.files[0])}
+    <div className="h-[calc(100vh-6rem)] flex flex-col justify-start items-start md:flex-row ">
+      <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
+        <Brand full />
+        <form
+          onSubmit={(e) => signupUser(e, navigate, { ...credentials })}
+          className="flex justify-start items-center gap-2 flex-col w-full mt-4"
+        >
+          <section className="relative ">
+            <img
+              src={credentials.photoURL}
+              alt="userlogo"
+              className="w-full max-w-[5rem] rounded-full "
             />
-            <label
-              htmlFor="file"
-              className="bg-slate-100 p-1 flex justify-center items-center rounded-full cursor-pointer hover:bg-slate-200 transition"
+            <span className=" absolute bottom-[-5px] right-[-5px] ">
+              <input
+                type="file"
+                name="file"
+                id="file"
+                className=" absolute overflow-hidden hidden z-[-1]"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+              <label
+                htmlFor="file"
+                className="bg-slate-100 p-1 flex justify-center items-center rounded-full cursor-pointer hover:bg-slate-200 transition"
+              >
+                <FiUpload size={"1rem"} />
+              </label>
+            </span>
+          </section>
+          <Input
+            type="email"
+            name="email"
+            autoFocus
+            placeholder="Your Email"
+            value={credentials.email}
+            required
+            onChange={(e) => handleChange(e, setCredentials)}
+          />
+          <Input
+            required
+            placeholder="New Password"
+            type="password"
+            name="password"
+            value={credentials.password}
+            onChange={(e) => handleChange(e, setCredentials)}
+          />
+          <Input
+            className={"border-none outline-none focus:border-red-500"}
+            type="text"
+            name="displayName"
+            onChange={(e) => handleChange(e, setCredentials)}
+            placeholder="Full Name"
+          />
+          <Input
+            isValidUsername={isValidUsername}
+            type="text"
+            name="username"
+            value={credentials.username}
+            className={`${
+              credentials.username.length > 0
+                ? isValidUsername
+                  ? " border-green-500"
+                  : " border-red-500"
+                : "border-none"
+            } border-[2px] rounded-sm `}
+            onChange={(e) => {
+              setCredentials((state) => ({
+                ...state,
+                username: e.target.value,
+              }));
+              debounceUsername(e.target.value);
+            }}
+            placeholder="User Name"
+          />
+          <label
+            htmlFor="gender"
+            className="mx-auto min-w-[18rem] flex items-center justify-start gap-4"
+          >
+            Gender
+            <select
+              name="gender"
+              id="gender"
+              value={credentials.gender}
+              onChange={(e) =>
+                setCredentials((state) => ({
+                  ...state,
+                  gender: e.target.value,
+                }))
+              }
             >
-              <FiUpload size={"1rem"} />
-            </label>
-          </span>
-        </section>
-        <Input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={credentials.email}
-          required
-          onChange={(e) => handleChange(e, setCredentials)}
-        />
-        <Input
-          required
-          placeholder="******"
-          type="password"
-          name="password"
-          value={credentials.password}
-          onChange={(e) => handleChange(e, setCredentials)}
-        />
-        <Input
-          className={"border-none outline-none focus:border-red-500"}
-          type="text"
-          name="displayName"
-          onChange={(e) => handleChange(e, setCredentials)}
-          placeholder="Full Name"
-        />
-        <Input
-          isValidUsername={isValidUsername}
-          type="text"
-          name="username"
-          value={credentials.username}
-          className={`${
-            credentials.username.length > 0
-              ? isValidUsername
-                ? " border-green-500"
-                : " border-red-500"
-              : "border-none"
-          } border-[2px] rounded-sm `}
-          onChange={(e) => {
-            setCredentials((state) => ({ ...state, username: e.target.value }));
-            debounceUsername(e.target.value);
-          }}
-          placeholder="User Name"
-        />
-        <Input
-          type="text"
-          name="photoURL"
-          onChange={(e) => handleChange(e, setCredentials)}
-          placeholder="PhotoURL"
-        />
-        <select
-          name="gender"
-          value={credentials.gender}
-          onChange={(e) => handleChange(e, setCredentials)}
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </label>
+          <section className="mt-2 flex justify-center items-center gap-4">
+            <Button
+              className="bg-cta-dark text-light-1 disabled:bg-slate-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed disabled:text-gray-900"
+              type={`${
+                isValidDetails && isValidUsername ? "submit" : "button"
+              }`}
+              disabled={!isValidDetails && !isValidUsername}
+            >
+              Sign Up
+            </Button>
+            <Button
+              className="bg-cta-light border-2 text-cta-dark"
+              type="reset"
+              onClick={() => setCredentials(initialCredentialState)}
+            >
+              Reset
+            </Button>
+          </section>
+        </form>
+      </div>
+      <div className="font-montserrat w-full  bg-accent-2 h-full p-4 flex flex-col justify-center gap-4 items-center text-light-1">
+        <h1 className="text-xl font-bold italic ">Existing User?</h1>
+        <p className="font-extrabold text-3xl  gap-x-4">
+          Look at what your friends are upto!!!
+        </p>
+        <Button
+          onClick={() => navigate("/login")}
+          className="text-accent-2 bg-cta-light/90 "
         >
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-        <button
-          className="bg-cta-dark text-light-1 px-2 py-1 text-sm rounded hover:brightness-95 transition-all  disabled:bg-slate-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed disabled:text-gray-900"
-          type={`${isValidDetails && isValidUsername ? "submit" : "button"}`}
-          disabled={!isValidDetails && !isValidUsername}
-        >
-          Sign Up
-        </button>
-        <button
-          className="bg-cta-light text-cta-dark px-2 py-1 text-sm rounded hover:brightness-90 transition-all "
-          type="reset"
-          onClick={() => setCredentials(initialCredentialState)}
-        >
-          Reset
-        </button>
-        <Link to={"/login"}>Login</Link>
-      </form>
+          Log In
+        </Button>
+      </div>
     </div>
   );
 };

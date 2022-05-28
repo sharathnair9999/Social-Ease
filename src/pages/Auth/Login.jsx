@@ -7,6 +7,8 @@ import Input from "./components/Input";
 import { Brand } from "../../components";
 import { googleSignInHandler } from "./helpers";
 import { FcGoogle } from "react-icons/fc";
+import Button from "./components/Button";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,13 +17,14 @@ const Login = () => {
     password: "",
   };
   const [credentials, setCredentials] = useState(initialCredentialState);
-  const loginUser = async (e, email, password) => {
+  const loginUser = async (e, enteredEmail, password) => {
     e.preventDefault();
     const {
-      user: { providerData, uid },
-    } = await signInWithEmailAndPassword(auth, email, password);
-    console.log(providerData);
-    console.log(uid);
+      user: {
+        providerData: { displayName },
+      },
+    } = await signInWithEmailAndPassword(auth, enteredEmail, password);
+    toast.success(`Welcome Back ${displayName}!`);
   };
 
   const signInWithGoogle = () => {
@@ -29,14 +32,14 @@ const Login = () => {
   };
 
   return (
-    <div className=" h-screen flex flex-col justify-start items-center md:flex-row ">
-      <div className="w-full left p-4 bg-light-1 h-1/2 md:h-full flex flex-col justify-start items-start ">
+    <div className="h-[calc(100vh-6rem)] flex flex-col justify-start items-start md:flex-row  ">
+      <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
         <Brand full />
         <form
           onSubmit={(e) =>
             loginUser(e, credentials.email, credentials.password)
           }
-          className="flex justify-center items-center gap-2 flex-col w-full mb-auto md:mt-40"
+          className="flex justify-center items-center gap-2 flex-col w-full mb-auto md:my-auto"
         >
           <p className="font-light text-2xl flex justify-center items-center gap-4">
             Sign In to <Brand logo />
@@ -70,32 +73,29 @@ const Login = () => {
             value={credentials.password}
             onChange={(e) => handleChange(e, setCredentials)}
           />
-          <button
-            type="submit"
-            className="text-white font-bold text-sm bg-cta-dark px-4 py-2 rounded-md relative top-0 hover:top-[-4px] transition-all duration-200 shadow-lg"
-          >
+          <Button type="submit" className="text-white bg-cta-dark font-bold">
             Login
-          </button>
+          </Button>
         </form>
       </div>
-      <div className="font-montserrat w-full right bg-accent-2 h-1/2 md:h-full  p-4 flex flex-col justify-center gap-4 items-center text-light-1">
+      <div className="font-montserrat w-full  bg-accent-2 h-full p-4 flex flex-col justify-center gap-4 items-center text-light-1">
         <h1 className="text-xl font-bold italic ">New Here?</h1>
-        <p className="font-extrabold text-3xl flex flex-wrap gap-x-4">
+        <p className="font-extrabold text-3xl  gap-x-4">
           <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
-            Socialize
+            Socialize{" "}
           </span>
-          with
+          with{" "}
           <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
-            Ease
+            Ease{" "}
           </span>
           that you've had never before
         </p>
-        <button
+        <Button
           onClick={() => navigate("/signup")}
-          className="text-sm text-accent-2 font-bold  px-4 py-2 rounded-md relative top-0 hover:top-[-4px] transition-all duration-200 shadow-lg bg-cta-light/90 "
+          className=" text-accent-2 bg-cta-light/90"
         >
           Sign Up
-        </button>
+        </Button>
       </div>
     </div>
   );
