@@ -9,13 +9,13 @@ const Brand = ({ full, logo, name }) => {
         alt="app logo"
         className={`w-10 ${(full || logo) && "block"} ${name && "hidden"} `}
       />
-      <h1
+      <span
         className={` ${(name || full) && "block"} ${
           logo && "hidden"
         } font-satisfy font-bold  text-transparent text-4xl p-1 bg-clip-text bg-gradient-to-r from-cta-dark to-accent-1`}
       >
         SocialEase
-      </h1>
+      </span>
     </header>
   );
 };

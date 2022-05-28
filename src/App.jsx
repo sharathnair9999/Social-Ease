@@ -19,8 +19,8 @@ import { Footer } from "./components";
 
 function App() {
   return (
-    <div className="App">
-      <ToastContainer />
+    <div>
+      <ToastContainer autoClose={2500} pauseOnFocusLoss={false} />
       <Routes>
         <Route
           path="login"
