@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ProtectedRoute, RedirectLoggedInUser } from "./helpers";
+import { RedirectLoggedInUser } from "./helpers";
 import "./index.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Bookmarks,
   ErrorPage,
@@ -13,90 +15,83 @@ import {
   SinglePost,
   UserProfile,
 } from "./pages";
+import { Footer } from "./components";
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="login"
-        element={
-          <RedirectLoggedInUser>
-            <Login />
-          </RedirectLoggedInUser>
-        }
-      />
-      <Route
-        path="signup"
-        element={
-          <RedirectLoggedInUser>
-            <Signup />
-          </RedirectLoggedInUser>
-        }
-      />
-      <Route path="/" element={<Navigate to={"feed"} />} />
-      <Route
-        path="feed"
-        element={
-          <ProtectedRoute>
+    <div className="App">
+      <ToastContainer />
+      <Routes>
+        <Route
+          path="login"
+          element={
+            <RedirectLoggedInUser>
+              <Login />
+            </RedirectLoggedInUser>
+          }
+        />
+        <Route
+          path="signup"
+          element={
+            <RedirectLoggedInUser>
+              <Signup />
+            </RedirectLoggedInUser>
+          }
+        />
+        <Route path="/" element={<Navigate to={"feed"} />} />
+        <Route
+          path="feed"
+          element={
             <MainContainer>
               <Feed />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="explore"
-        element={
-          <ProtectedRoute>
+          }
+        />
+        <Route
+          path="explore"
+          element={
             <MainContainer>
               <Explore />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="bookmarks"
-        element={
-          <ProtectedRoute>
+          }
+        />
+        <Route
+          path="bookmarks"
+          element={
             <MainContainer>
               <Bookmarks />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="people"
-        element={
-          <ProtectedRoute>
+          }
+        />
+        <Route
+          path="people"
+          element={
             <MainContainer>
               <People />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="profile/:profileId"
-        element={
-          <ProtectedRoute>
+          }
+        />
+        <Route
+          path="profile/:profileId"
+          element={
             <MainContainer>
               <UserProfile />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="post/:postId"
-        element={
-          <ProtectedRoute>
+          }
+        />
+        <Route
+          path="post/:postId"
+          element={
             <MainContainer>
               <SinglePost />
             </MainContainer>
-          </ProtectedRoute>
-        }
-      ></Route>
-      <Route path="invalid" element={<ErrorPage />} />
-      <Route path="*" element={<ErrorPage />} />
-    </Routes>
+          }
+        ></Route>
+        <Route path="invalid" element={<ErrorPage />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
+      <Footer />
+    </div>
   );
 }
 
