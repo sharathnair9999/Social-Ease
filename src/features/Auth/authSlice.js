@@ -1,5 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginService } from "../../services";
+import { createSlice } from "@reduxjs/toolkit";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase-config";
+
+// const userDetails = JSON.parse(localStorage.getItem("userDetails") ?  )
 
 const initialState = {
   displayName: "",
@@ -9,32 +12,26 @@ const initialState = {
   isLoggedIn: false,
   error: "",
 };
-
-export const loginUser = createAsyncThunk(
-  `auth/loginUser`,
-  async ({ enteredEmail, password }, { rejectWithValue }) => {
-    try {
-      const { email, displayName, photoURL, uid } = await loginService(
-        enteredEmail,
-        password
-      );
-      console.log(email, displayName, photoURL, uid);
-    } catch (error) {
-      console.log(error);
-      rejectWithValue(error.message);
-    }
+const unsubscribe = onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log(user); //will remove after configuring slice completely
+  } else {
+    console.log("logged out"); //will remove after configuring slice completely
   }
-);
+});
+
+unsubscribe();
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     loginUser: (state, action) => {
-      state.displayName = "Sharath";
-      state.uid = "asdljdlkjjjjlaskjdskd";
-      state.email = "sharath@sharath.com";
-      state.photoURL = "lkjsdkjdasdjlkjkljasd";
+      const { displayName, uid, email, photoURL } = action.payload;
+      state.displayName = displayName;
+      state.uid = uid;
+      state.email = email;
+      state.photoURL = photoURL;
       state.isLoggedIn = true;
     },
     logoutUser: (state) => {
@@ -43,4 +40,6 @@ const authSlice = createSlice({
   },
 });
 
-export const authReducer = authSlice.reducer;
+export const { loginUser, logoutUser } = authSlice.actions;
+
+export default authSlice.reducer;
