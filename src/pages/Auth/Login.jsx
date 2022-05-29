@@ -49,7 +49,7 @@ const Login = () => {
           <section className="relative w-full flex items-center justify-center">
             <hr className="w-1/2 border-1 border-accent-1-light my-2" />
             <span className="absolute top-[-5px] left-auto right-auto bg-light-1 px-2 font-light">
-              OR
+              ORR
             </span>
           </section>
           <Input
