@@ -27,7 +27,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-6rem)] flex flex-col justify-start items-start md:flex-row  ">
+    <div className="h-[calc(100vh-8.3rem)] flex flex-col justify-start items-start md:flex-row  ">
       <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
         <Brand full />
         <form
