@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../pages/Auth/helpers";
 import Brand from "../Brand";
 import Button from "./components/Button";
+import { logout } from "../../services";
 
 const TopNav = () => {
   const navigate = useNavigate();

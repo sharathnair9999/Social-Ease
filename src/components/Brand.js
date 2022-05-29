@@ -4,8 +4,8 @@ import { constants } from "../helpers";
 
 const Brand = ({ full, logo, name }) => {
   return (
-    <Link to={"/feed"}>
-      <header className="flex justify-start items-center gap-2">
+    <header>
+      <Link to={"/feed"} className="flex justify-start items-center gap-2">
         <img
           src={constants.imgUrls.appLogo}
           alt="app logo"
@@ -18,8 +18,8 @@ const Brand = ({ full, logo, name }) => {
         >
           SocialEase
         </span>
-      </header>
-    </Link>
+      </Link>
+    </header>
   );
 };
 
