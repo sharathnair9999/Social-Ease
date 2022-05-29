@@ -22,3 +22,12 @@ export const constants = {
       "https://res.cloudinary.com/sharath-media-library/image/upload/v1653755115/social%20media/icons8-twitter-48_ukzjgp.png",
   },
 };
+
+export const capitalize = (name) => {
+  const words = name.split(" ");
+  const capitalWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+  const actualWord = capitalWords.join(" ");
+  return actualWord;
+};

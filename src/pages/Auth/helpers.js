@@ -9,6 +9,7 @@ import { auth, db, storage } from "../../firebase-config";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { capitalize } from "../../helpers/constants";
 const provider = new GoogleAuthProvider();
 
 export const userNameExists = async (text, setter) => {
@@ -85,7 +86,9 @@ export const signupUser = async (e, navigate, { ...details }) => {
     following: [],
     likedPosts: [],
   });
-  toast.success(`Welcome to SocialEase Fam, ${details.displayName}`);
+  toast.success(
+    `Welcome to SocialEase Fam, ${capitalize(details.displayName)}`
+  );
   navigate("/login");
 };
 
@@ -110,9 +113,9 @@ export const googleSignInHandler = async () => {
         following: [],
         likedPosts: [],
       });
-      toast.success(`Hi ${user.displayName}`);
+      toast.success(`Hi ${capitalize(user.displayName)}`);
     } else {
-      toast.success(`Welcome ${user.displayName}`);
+      toast.success(`Welcome ${capitalize(user.displayName)}`);
     }
   } catch (error) {
     toast.error(error.message);
