@@ -1,7 +1,6 @@
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
-  signOut,
   updateProfile,
 } from "firebase/auth";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
@@ -161,8 +160,4 @@ export const uploadFile = (file, setValid, setCredentials) => {
       });
     }
   );
-};
-
-export const logout = async () => {
-  await signOut(auth);
 };
