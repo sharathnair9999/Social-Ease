@@ -16,12 +16,12 @@ const Input = ({ isValidUsername, ...args }) => {
             : args.type
         }
         name={args.name}
+        autoFocus={args.autoFocus}
         placeholder={args.placeholder}
         value={args.value}
         onChange={args.onChange}
-        className={` py-1 rounded-sm ${args.className} ${
-          args.name === "username" && "placeholder:pl-4"
-        } outline-none border max-w-[20rem] px-2 w-full`}
+        required={args.required}
+        className={` py-1 rounded-sm ${args.className} outline-none border max-w-[20rem] px-2 w-full`}
       />
       {args.type === "password" && (
         <button

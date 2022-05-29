@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { RedirectLoggedInUser } from "./helpers";
+import { ProtectedRoute, RedirectLoggedInUser } from "./helpers";
 import "./index.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,11 +16,31 @@ import {
   UserProfile,
 } from "./pages";
 import { Footer } from "./components";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase-config";
+import { loginAction, logoutUser } from "./features/Auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        let { uid, photoURL, displayName, email } = user;
+        dispatch(loginAction({ uid, photoURL, displayName, email }));
+      } else {
+        dispatch(logoutUser());
+      }
+    });
+
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="App">
-      <ToastContainer />
+    <div>
+      <ToastContainer autoClose={2500} pauseOnFocusLoss={false} />
       <Routes>
         <Route
           path="login"
@@ -42,9 +62,11 @@ function App() {
         <Route
           path="feed"
           element={
-            <MainContainer>
-              <Feed />
-            </MainContainer>
+            <ProtectedRoute route={"/explore"}>
+              <MainContainer>
+                <Feed />
+              </MainContainer>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -58,9 +80,11 @@ function App() {
         <Route
           path="bookmarks"
           element={
-            <MainContainer>
-              <Bookmarks />
-            </MainContainer>
+            <ProtectedRoute route={"/login"}>
+              <MainContainer>
+                <Bookmarks />
+              </MainContainer>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -74,9 +98,11 @@ function App() {
         <Route
           path="profile/:profileId"
           element={
-            <MainContainer>
-              <UserProfile />
-            </MainContainer>
+            <ProtectedRoute route={"/login"}>
+              <MainContainer>
+                <UserProfile />
+              </MainContainer>
+            </ProtectedRoute>
           }
         />
         <Route

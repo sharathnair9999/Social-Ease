@@ -9,7 +9,7 @@ const RedirectLoggedInUser = ({ children }) => {
   return !userState.isLoggedIn ? (
     children
   ) : (
-    <Navigate replace={true} to={-1 || "/feed"} state={{ from: location }} />
+    <Navigate replace={true} to={"/feed"} state={{ from: location }} />
   );
 };
 
