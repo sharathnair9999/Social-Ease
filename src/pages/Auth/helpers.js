@@ -73,16 +73,13 @@ export const signupUser = async (e, navigate, { ...details }) => {
   await updateProfile(currentUser, {
     displayName: details.displayName,
     photoURL: details.photoURL,
-    gender: details.gender,
-    username: details.username,
-    posts: [],
-    followers: [],
-    following: [],
-    likedPosts: [],
   });
 
   await setDoc(doc(db, "users", currentUser.uid), {
-    ...details,
+    displayName: details.displayName,
+    photoURL: details.photoURL,
+    gender: details.gender,
+    username: details.username,
     posts: [],
     followers: [],
     following: [],
@@ -102,8 +99,6 @@ export const googleSignInHandler = async () => {
       await updateProfile(user, {
         displayName: user.displayName,
         photoURL: user.photoURL,
-        gender: "NA",
-        username: user.email.split("@")[0],
       });
       await setDoc(doc(db, "users", user.uid), {
         displayName: user.displayName,

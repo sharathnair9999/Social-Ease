@@ -9,6 +9,7 @@ import { googleSignInHandler } from "./helpers";
 import { FcGoogle } from "react-icons/fc";
 import Button from "./components/Button";
 import { toast } from "react-toastify";
+import { capitalize } from "../../helpers/constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,15 +21,9 @@ const Login = () => {
   const loginUser = async (e, enteredEmail, password) => {
     e.preventDefault();
     const {
-      user: {
-        providerData: { displayName },
-      },
+      user: { displayName },
     } = await signInWithEmailAndPassword(auth, enteredEmail, password);
-    toast.success(`Welcome Back ${displayName}!`);
-  };
-
-  const signInWithGoogle = () => {
-    googleSignInHandler();
+    toast.success(`Welcome Back ${capitalize(displayName)}!`);
   };
 
   return (
@@ -47,7 +42,7 @@ const Login = () => {
           <button
             type="button"
             className="flex justify-center items-center gap-2 w-10 h-10 rounded-full bg-white  text-sm"
-            onClick={signInWithGoogle}
+            onClick={googleSignInHandler}
           >
             <FcGoogle size={"1.1rem"} />
           </button>

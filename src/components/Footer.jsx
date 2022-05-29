@@ -3,7 +3,7 @@ import { constants } from "../helpers";
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-800 px-4 py-2 flex justify-center items-center gap-6 flex-col w-full">
+    <footer className="bg-slate-800 px-4 py-2 flex justify-center items-center gap-1 flex-col w-full mb-14 md:mb-0 ">
       <p className="md:text-xl text-md text-slate-300 text-center">
         Created By{" "}
         <a

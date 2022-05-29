@@ -20,6 +20,7 @@ const Input = ({ isValidUsername, ...args }) => {
         placeholder={args.placeholder}
         value={args.value}
         onChange={args.onChange}
+        required={args.required}
         className={` py-1 rounded-sm ${args.className} outline-none border max-w-[20rem] px-2 w-full`}
       />
       {args.type === "password" && (

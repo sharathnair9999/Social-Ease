@@ -126,13 +126,17 @@ const Signup = () => {
                 }))
               }
             >
+              <option value="select">Select</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
+              <option value="others">Others</option>
             </select>
           </label>
           <section className="mt-2 flex justify-center items-center gap-4">
             <Button
-              className="bg-cta-dark text-light-1 disabled:bg-slate-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed disabled:text-gray-900"
+              className={
+                "bg-cta-dark text-light-1 disabled:bg-slate-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed disabled:text-gray-900"
+              }
               type={`${
                 isValidDetails && isValidUsername ? "submit" : "button"
               }`}
