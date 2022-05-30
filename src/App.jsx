@@ -17,18 +17,28 @@ import {
 } from "./pages";
 import { Footer } from "./components";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase-config";
+import { auth, db } from "./firebase-config";
 import { loginAction, logoutUser } from "./features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         let { uid, photoURL, displayName, email } = user;
-        dispatch(loginAction({ uid, photoURL, displayName, email }));
+        const userDetails = await getDoc(doc(db, "users", uid));
+        dispatch(
+          loginAction({
+            uid,
+            photoURL,
+            displayName,
+            email,
+            username: userDetails?.username ?? email.split("@")[0],
+          })
+        );
       } else {
         dispatch(logoutUser());
       }

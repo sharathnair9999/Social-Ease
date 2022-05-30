@@ -1,30 +1,43 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { constants, debounce, handleChange } from "../../helpers";
+import {
+  constants,
+  debounce,
+  deleteFile,
+  handleChange,
+  uploadFile,
+} from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import Input from "./components/Input";
-import { signupUser, uploadFile, userNameExists } from "./helpers";
+import { signupUser, userNameExists } from "./helpers";
 import { Brand } from "../../components";
 import { FiUpload } from "react-icons/fi";
-import Button from "./components/Button";
+import { Button } from "../../components";
+import { ref } from "firebase/storage";
+import { storage } from "../../firebase-config";
+import { AiFillDelete } from "react-icons/ai";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [isValidDetails, setisValidDetails] = useState(true);
   const [isValidUsername, setIsValidUsername] = useState(true);
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState([]);
+  const initialDP = constants.imgUrls.userPlaceholder;
   const initialCredentialState = {
     email: "",
     password: "",
     gender: "",
-    photoURL: constants.imgUrls.userPlaceholder,
+    photoURL: [initialDP],
     displayName: "",
     username: "",
   };
   const [credentials, setCredentials] = useState(initialCredentialState);
 
   useEffect(() => {
-    file && uploadFile(file, setisValidDetails, setCredentials);
-  }, [file]);
+    file.length > 0 &&
+      file.forEach((img) =>
+        uploadFile(img, setisValidDetails, setCredentials, true)
+      );
+  }, [file[0]]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUsername = useCallback(
@@ -35,8 +48,12 @@ const Signup = () => {
     []
   );
 
+  const deletePhoto = async () => {
+    await deleteFile(ref(storage, credentials.photoURL[0]), setCredentials);
+  };
+
   return (
-    <div className="h-[calc(100vh-6rem)] flex flex-col justify-start items-start md:flex-row ">
+    <div className="h-[calc(100vh-8.3rem)] flex flex-col justify-start items-start md:flex-row ">
       <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
         <Brand full />
         <form
@@ -45,17 +62,26 @@ const Signup = () => {
         >
           <section className="relative ">
             <img
-              src={credentials.photoURL}
+              src={credentials.photoURL[0]}
               alt="userlogo"
-              className="w-full max-w-[5rem] rounded-full "
+              className=" w-[5rem] h-auto p-1 rounded-full "
             />
+            {credentials.photoURL[0] !== initialDP && (
+              <button
+                type="button"
+                className="absolute top-0 right-[-5px] text-red-500 text-md"
+                onClick={() => deletePhoto()}
+              >
+                <AiFillDelete size={"1.2rem"} />
+              </button>
+            )}
             <span className=" absolute bottom-[-5px] right-[-5px] ">
               <input
                 type="file"
                 name="file"
                 id="file"
                 className=" absolute overflow-hidden hidden z-[-1]"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => setFile(() => [e.target.files[0]])}
               />
               <label
                 htmlFor="file"

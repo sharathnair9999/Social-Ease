@@ -7,7 +7,7 @@ import Input from "./components/Input";
 import { Brand } from "../../components";
 import { googleSignInHandler } from "./helpers";
 import { FcGoogle } from "react-icons/fc";
-import Button from "./components/Button";
+import { Button } from "../../components";
 import { toast } from "react-toastify";
 import { capitalize } from "../../helpers/constants";
 
@@ -26,8 +26,13 @@ const Login = () => {
     toast.success(`Welcome Back ${capitalize(displayName)}!`);
   };
 
+  const loginWithGoogle = async () => {
+    await googleSignInHandler();
+    navigate("/feed");
+  };
+
   return (
-    <div className="h-[calc(100vh-6rem)] flex flex-col justify-start items-start md:flex-row  ">
+    <div className="h-[calc(100vh-8.3rem)] flex flex-col justify-start items-start md:flex-row  ">
       <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
         <Brand full />
         <form
@@ -36,13 +41,13 @@ const Login = () => {
           }
           className="flex justify-center items-center gap-2 flex-col w-full mb-auto md:my-auto"
         >
-          <p className="font-light text-2xl flex justify-center items-center gap-4">
+          <section className="font-light text-2xl flex justify-center items-center gap-4">
             Sign In to <Brand logo />
-          </p>
+          </section>
           <button
             type="button"
             className="flex justify-center items-center gap-2 w-10 h-10 rounded-full bg-white  text-sm"
-            onClick={googleSignInHandler}
+            onClick={loginWithGoogle}
           >
             <FcGoogle size={"1.1rem"} />
           </button>
