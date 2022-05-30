@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Modal, PostCard, PostEditor } from "../../components";
-import { useOnClickOutside } from "../../custom-hooks";
 
 const Feed = () => {
   const { displayName, photoURL, uid } = useSelector((state) => state.auth);

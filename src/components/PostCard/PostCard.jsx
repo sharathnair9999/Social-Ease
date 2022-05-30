@@ -9,6 +9,8 @@ import PostActions from "../PostActions";
 import CommentsAndShares from "../CommentsAndShares";
 import { AiFillLike } from "react-icons/ai";
 import PeopleListModal from "../PeopleListModal";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const PostCard = ({ postInfo }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -17,14 +19,17 @@ const PostCard = ({ postInfo }) => {
   const editModalRef = useRef();
   const optionsRef = useRef();
   useOnClickOutside(optionsRef, () => setShowOptions(false));
+  const { uid } = useSelector((state) => state.auth);
   return (
     <div className="h-full w-full mb-4 shadow-md">
       <section className="flex justify-start items-center gap-4 px-2">
-        <img
-          src={`https://lh3.googleusercontent.com/a-/AOh14GgbjT5Falp276vt_d-EEBSWKgflhT__G-qKQQFc5vU=s96-c`}
-          alt="sharath"
-          className="w-12 h-12 rounded-full"
-        />
+        <Link to={`/profile/${uid}`}>
+          <img
+            src={`https://lh3.googleusercontent.com/a-/AOh14GgbjT5Falp276vt_d-EEBSWKgflhT__G-qKQQFc5vU=s96-c`}
+            alt="sharath"
+            className="w-12 h-12 rounded-full"
+          />
+        </Link>
         <section className="flex justify-start items-start gap-0 flex-col">
           <p className="text-md font-medium">{"Sharath Nair"}</p>
           <p className="text-sm font-normal">{"@sharathnair9999"}</p>

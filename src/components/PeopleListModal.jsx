@@ -11,7 +11,7 @@ const PeopleListModal = React.forwardRef(
     return (
       <div
         ref={ref}
-        className="w-2/4 bg-white/90 px-4 py-2 md:h-96 h-40 rounded-md shadow-xl "
+        className="md:w-2/4 w-full bg-white/90 px-4 py-2 mx-2 h-96 rounded-md shadow-xl "
       >
         <p className="underline underline-offset-4 text-cta-dark decoration-accent-2 mb-2">
           {text}

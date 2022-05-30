@@ -6,7 +6,7 @@ const MainContainer = ({ children }) => {
     <div className="min-h-screen flex justify-center items-start">
       <TopNav />
       <SideNav />
-      <div className=" lg:max-w-3xl md:max-w-4xl mt-16 px-2 md:min-w-[15rem] ">
+      <div className=" lg:mr-[6rem] flex-grow xl:max-w-[45rem] md:max-w-[34rem] mt-16 px-2">
         {children}
       </div>
       <FollowMore />
