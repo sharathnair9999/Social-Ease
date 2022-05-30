@@ -4,10 +4,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
-import { auth, db, storage } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-toastify";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { capitalize } from "../../helpers/constants";
 const provider = new GoogleAuthProvider();
 
@@ -73,6 +72,7 @@ export const signupUser = async (e, navigate, { ...details }) => {
   await updateProfile(currentUser, {
     displayName: details.displayName,
     photoURL: details.photoURL,
+    username: details.username,
   });
 
   await setDoc(doc(db, "users", currentUser.uid), {
@@ -101,6 +101,7 @@ export const googleSignInHandler = async () => {
       await updateProfile(user, {
         displayName: user.displayName,
         photoURL: user.photoURL,
+        username: user.email.split("@")[0],
       });
       await setDoc(doc(db, "users", user.uid), {
         displayName: user.displayName,
@@ -119,45 +120,4 @@ export const googleSignInHandler = async () => {
   } catch (error) {
     toast.error(error.message);
   }
-};
-
-export const uploadFile = (file, setValid, setCredentials) => {
-  const fileName = new Date().getTime() + file.name;
-  const storageRef = ref(storage, fileName);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      progress != null && progress < 100 ? setValid(false) : setValid(true);
-      switch (snapshot.state) {
-        case "paused":
-          toast.warn("Upload is Paused");
-          break;
-        default:
-          break;
-      }
-    },
-    (error) => {
-      switch (error.code) {
-        case "storage/unauthorized":
-          toast.warn("Unauthorized Storage Access");
-          break;
-        case "storage/canceled":
-          toast.warn("Upload Cancelled");
-          break;
-        case "storage/unknown":
-          toast.warn("Unauthorized User. Please try later");
-          break;
-        default:
-          break;
-      }
-    },
-    () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((photoURL) => {
-        setCredentials((state) => ({ ...state, photoURL }));
-      });
-    }
-  );
 };
