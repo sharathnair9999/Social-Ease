@@ -4,7 +4,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useOnClickOutside } from "../../custom-hooks";
 import Modal from "../Modal";
-import PostEditor from "../PostEdior";
+import PostEditor from "../PostEditor";
 import PostActions from "../PostActions";
 import CommentsAndShares from "../CommentsAndShares";
 import { AiFillLike } from "react-icons/ai";
