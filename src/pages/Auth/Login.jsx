@@ -7,7 +7,7 @@ import Input from "./components/Input";
 import { Brand } from "../../components";
 import { googleSignInHandler } from "./helpers";
 import { FcGoogle } from "react-icons/fc";
-import Button from "./components/Button";
+import { Button } from "../../components";
 import { toast } from "react-toastify";
 import { capitalize } from "../../helpers/constants";
 

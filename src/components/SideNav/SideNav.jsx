@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { MdOutlineFeed, MdExplore, MdPeopleAlt } from "react-icons/md";
+import { BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
 
 const SideNav = () => {
   const { isLoggedIn, uid, displayName, photoURL } = useSelector(
@@ -30,7 +31,7 @@ const SideNav = () => {
     {
       url: "/bookmarks",
       display: "Bookmarks",
-      icon: <MdPeopleAlt size={"1.5rem"} />,
+      icon: <BsFillBookmarkCheckFill size={"1.5rem"} />,
       protectedLink: true,
     },
     {
@@ -51,7 +52,7 @@ const SideNav = () => {
     <div className="fixed bottom-0 left-0 right-0 h-14  md:h-[calc(100vh)] md:max-w-[10rem] md:fixed md:top-16 md:pt-1 md:left-3 bg-cta-light md:bg-transparent  ">
       <ul className="flex justify-between items-center md:justify-start  md:items-start md:flex-col md:gap-4  ">
         {links.map(({ url, display, icon, protectedLink }, id) => (
-          <li key={id} className="md:w-[10rem]">
+          <li key={id} className="lg:w-[10rem]">
             <NavLink
               to={url}
               className={({ isActive }) =>
@@ -59,13 +60,13 @@ const SideNav = () => {
                   isActive
                     ? "bg-cta-dark md:bg-cta-light text-white md:text-black md:border-cta-dark md:shadow-lg"
                     : "bg-transparent"
-                } md:flex-row flex-col  justify-start items-center gap-2 px-2 py-1 rounded-md text-xs md:text-lg ${
+                } md:flex-row flex-col  justify-start items-center gap-1 md:gap-2 px-2 py-1 rounded-md text-xs md:text-lg ${
                   protectedLink ? (!isLoggedIn ? "hidden" : "flex") : "flex"
                 }`
               }
             >
               {icon}
-              <span>{display}</span>
+              <span className="md:hidden lg:block">{display}</span>
             </NavLink>
           </li>
         ))}

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { constants, debounce, handleChange } from "../../helpers";
+import { constants, debounce, handleChange, uploadFile } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import Input from "./components/Input";
-import { signupUser, uploadFile, userNameExists } from "./helpers";
+import { signupUser, userNameExists } from "./helpers";
 import { Brand } from "../../components";
 import { FiUpload } from "react-icons/fi";
-import Button from "./components/Button";
+import { Button } from "../../components";
 
 const Signup = () => {
   const navigate = useNavigate();
