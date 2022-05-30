@@ -30,8 +30,15 @@ function App() {
       if (user) {
         let { uid, photoURL, displayName, email } = user;
         const userDetails = await getDoc(doc(db, "users", uid));
-        const { username } = userDetails.data();
-        dispatch(loginAction({ uid, photoURL, displayName, email, username }));
+        dispatch(
+          loginAction({
+            uid,
+            photoURL,
+            displayName,
+            email,
+            username: userDetails?.username ?? email.split("@")[0],
+          })
+        );
       } else {
         dispatch(logoutUser());
       }

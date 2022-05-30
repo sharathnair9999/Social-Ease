@@ -100,7 +100,6 @@ export const googleSignInHandler = async () => {
       await updateProfile(user, {
         displayName: user.displayName,
         photoURL: user.photoURL,
-        username: user.email.split("@")[0],
       });
       await setDoc(doc(db, "users", user.uid), {
         displayName: user.displayName,
