@@ -3,7 +3,7 @@ import RedirectLoggedInUser from "./RedirectLoggedInUser";
 import { handleChange } from "./handleChange";
 import { debounce } from "./debounce";
 import { constants } from "./constants";
-import { uploadFile } from "./uploadFile";
+import { uploadFile, deleteFile } from "./uploadFile";
 
 export {
   ProtectedRoute,
@@ -12,4 +12,5 @@ export {
   debounce,
   uploadFile,
   constants,
+  deleteFile,
 };

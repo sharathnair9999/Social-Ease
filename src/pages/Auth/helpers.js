@@ -71,13 +71,12 @@ export const signupUser = async (e, navigate, { ...details }) => {
   );
   await updateProfile(currentUser, {
     displayName: details.displayName,
-    photoURL: details.photoURL,
-    username: details.username,
+    photoURL: details.photoURL[0],
   });
 
   await setDoc(doc(db, "users", currentUser.uid), {
     displayName: details.displayName,
-    photoURL: details.photoURL,
+    photoURL: details.photoURL[0],
     gender: details.gender,
     username: details.username,
     posts: [],

@@ -1,8 +1,29 @@
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { toast } from "react-toastify";
 import { storage } from "../firebase-config";
+import { constants } from "./constants";
 
-export const uploadFile = (file, setValid, setCredentials) => {
+export const deleteFile = async (file, setCredentials) => {
+  try {
+    const storageRef = ref(storage, file);
+    await deleteObject(storageRef);
+    setCredentials((state) => ({
+      ...state,
+      photoURL: [constants.imgUrls.userPlaceholder],
+    }));
+    console.log("deleted file");
+  } catch (error) {
+    toast.error("Could not delete file");
+  }
+  // console.log(file);
+};
+
+export const uploadFile = (file, setValid, setCredentials, isSingleFile) => {
   const fileName = new Date().getTime() + file.name;
   const storageRef = ref(storage, fileName);
   const uploadTask = uploadBytesResumable(storageRef, file);
@@ -37,7 +58,12 @@ export const uploadFile = (file, setValid, setCredentials) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((photoURL) => {
-        setCredentials((state) => ({ ...state, photoURL }));
+        setCredentials((state) => ({
+          ...state,
+          photoURL: isSingleFile
+            ? [photoURL]
+            : [...state, [...state.photoURL, photoURL]],
+        }));
       });
     }
   );
