@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
@@ -34,4 +36,13 @@ export const addNewPost = async (details, setDetails) => {
 
 export const editPost = (details, setDetails) => {
   console.log("editted post details", details); //will edit in next commit
+};
+
+export const deletePost = async (id) => {
+  try {
+    await deleteDoc(doc(db, "posts", id));
+    toast.success("Delete Post Successully");
+  } catch (error) {
+    toast.error(error.message);
+  }
 };

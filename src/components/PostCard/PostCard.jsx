@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { getUserInfo } from "../../services/userServices";
 import { getReadableDate } from "../../helpers";
 import { useSelector } from "react-redux";
+import { deletePost } from "../../services";
 const PostCard = ({ postInfo }) => {
   const authState = useSelector((state) => state.auth);
   const { uid, media, postDescription, likes, comments, createdAt } = postInfo;
@@ -74,7 +75,10 @@ const PostCard = ({ postInfo }) => {
               </button>
             )}
             {currPostUser.uid === authState.uid && (
-              <button className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full">
+              <button
+                onClick={() => deletePost(postInfo.postId)}
+                className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
+              >
                 <AiFillDelete />
                 <span className="whitespace-nowrap">Delete</span>
               </button>
