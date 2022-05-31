@@ -35,8 +35,12 @@ const Signup = () => {
   useEffect(() => {
     file.length > 0 &&
       file.forEach((img) =>
-        uploadFile(img, setisValidDetails, setCredentials, true)
+        uploadFile(img, setisValidDetails, setCredentials, true, "photoURL")
       );
+    return () => {
+      setCredentials(initialCredentialState);
+      setFile([]);
+    };
   }, [file[0]]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,7 +53,11 @@ const Signup = () => {
   );
 
   const deletePhoto = async () => {
-    await deleteFile(ref(storage, credentials.photoURL[0]), setCredentials);
+    await deleteFile(
+      ref(storage, credentials.photoURL[0]),
+      setCredentials,
+      "photoURL"
+    );
   };
 
   return (
@@ -64,7 +72,7 @@ const Signup = () => {
             <img
               src={credentials.photoURL[0]}
               alt="userlogo"
-              className=" w-[5rem] h-auto p-1 rounded-full "
+              className=" w-[5rem] h-[5rem] p-1 rounded-full "
             />
             {credentials.photoURL[0] !== initialDP && (
               <button
