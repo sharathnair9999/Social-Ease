@@ -11,7 +11,7 @@ import Button from "./Button";
 import { useSelector } from "react-redux";
 
 const PostEditor = React.forwardRef(
-  ({ newPost, existingPostInfo, setShowModal }) => {
+  ({ newPost, existingPostInfo, setShowModal }, ref) => {
     const { uid } = useSelector((state) => state.auth);
     const newPostState = {
       postDescription: "",
@@ -53,9 +53,7 @@ const PostEditor = React.forwardRef(
     };
     const handlePost = async (e) => {
       e.preventDefault();
-      newPost
-        ? await addNewPost(postDetails, setPostDetails)
-        : await editPost(postDetails, setPostDetails);
+      newPost ? await addNewPost(postDetails) : await editPost(postDetails);
       setPostDetails(newPostState);
       setImages([]);
       setShowModal(false);
@@ -168,7 +166,8 @@ const PostEditor = React.forwardRef(
               onClick={() => {
                 cancelPostAction();
               }}
-              className={`bg-red-500 text-white hover:bg-red-700 ml-auto`}
+              type="button"
+              className={`bg-red-600 text-white hover:bg-red-700 ml-auto`}
             >
               Cancel
             </Button>
