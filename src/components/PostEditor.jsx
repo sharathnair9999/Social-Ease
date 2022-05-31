@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useOnClickOutside } from "../custom-hooks";
 import { deleteFile, handleChange, uploadFile } from "../helpers";
 import { BsFillImageFill } from "react-icons/bs";
@@ -12,16 +11,15 @@ import Button from "./Button";
 import { useSelector } from "react-redux";
 
 const PostEditor = React.forwardRef(
-  ({ newPost, existingPostInfo, setShowModal }, ref) => {
+  ({ newPost, existingPostInfo, setShowModal }) => {
     const { uid } = useSelector((state) => state.auth);
     const newPostState = {
       postDescription: "",
       media: [],
       likes: [],
       comments: [],
-      uid,
+      uid: uid,
     };
-    const navigate = useNavigate();
     const [isValidDetails, setisValidDetails] = useState(true);
     const [images, setImages] = useState([]);
     const postState = newPost ? newPostState : existingPostInfo;
@@ -29,7 +27,7 @@ const PostEditor = React.forwardRef(
     const [showEmojis, setShowEmojis] = useState(false);
     const emojisRef = useRef();
     useOnClickOutside(emojisRef, () => setShowEmojis(false));
-    useOnClickOutside(ref, () => {
+    const cancelPostAction = () => {
       if (
         postDetails.postDescription.length > 0 ||
         postDetails.media.length > 0
@@ -52,7 +50,7 @@ const PostEditor = React.forwardRef(
       } else {
         setShowModal(false);
       }
-    });
+    };
     const handlePost = async (e) => {
       e.preventDefault();
       newPost
@@ -64,11 +62,10 @@ const PostEditor = React.forwardRef(
     };
 
     useEffect(() => {
-      images.length > 0 &&
-        images.forEach((image) =>
-          uploadFile(image, setisValidDetails, setPostDetails, true, "media")
-        );
-    }, [images[0]]);
+      images.forEach(async (image) =>
+        uploadFile(image, setisValidDetails, setPostDetails, true, "media")
+      );
+    }, [images]);
 
     const onEmojiClick = (event, emojiObject) => {
       setPostDetails((state) => ({
@@ -78,7 +75,6 @@ const PostEditor = React.forwardRef(
     };
     return (
       <form
-        ref={ref}
         className={`md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
         onSubmit={handlePost}
       >
@@ -114,7 +110,7 @@ const PostEditor = React.forwardRef(
             </button>
           </div>
         )}
-        <section className="utilities mt-auto flex justify-start items-center gap-4 relative">
+        <section className="utilities mt-auto flex justify-start items-center gap-4 relative w-full ">
           <span className="relative ">
             <input
               type="file"
@@ -154,19 +150,29 @@ const PostEditor = React.forwardRef(
           ) : (
             ""
           )}
-          <Button
-            type="submit"
-            className={`${
-              isValidDetails && postDetails.postDescription.length !== 0
-                ? "bg-cta-dark text-white"
-                : "bg-cta-light text-slate-400 cursor-not-allowed "
-            }`}
-            disabled={
-              !isValidDetails || postDetails.postDescription.length === 0
-            }
-          >
-            {newPost ? "Add Post" : "Update Post"}
-          </Button>
+          <section className="ml-auto flex justify-center items-center gap-2">
+            <Button
+              type="submit"
+              className={`${
+                isValidDetails && postDetails.postDescription.length !== 0
+                  ? "bg-cta-dark text-white"
+                  : "bg-cta-light text-slate-400 cursor-not-allowed ml-auto "
+              }`}
+              disabled={
+                !isValidDetails || postDetails.postDescription.length === 0
+              }
+            >
+              {newPost ? "Add Post" : "Update Post"}
+            </Button>
+            <Button
+              onClick={() => {
+                cancelPostAction();
+              }}
+              className={`bg-red-500 text-white hover:bg-red-700 ml-auto`}
+            >
+              Cancel
+            </Button>
+          </section>
         </section>
       </form>
     );

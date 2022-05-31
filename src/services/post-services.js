@@ -6,6 +6,7 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
+import { toast } from "react-toastify";
 import { db } from "../firebase-config";
 
 export const allPostsListener = async (dispatch, getAllPosts) => {
@@ -22,11 +23,13 @@ export const allPostsListener = async (dispatch, getAllPosts) => {
 
 export const addNewPost = async (details, setDetails) => {
   try {
-    const docRef = await addDoc(collection(db, "posts"), {
+    await addDoc(collection(db, "posts"), {
       ...details,
       createdAt: serverTimestamp(),
     });
-  } catch (error) {}
+  } catch (error) {
+    toast.error(error.message);
+  }
 };
 
 export const editPost = (details, setDetails) => {

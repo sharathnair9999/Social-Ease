@@ -13,7 +13,9 @@ import PeopleListModal from "../PeopleListModal";
 import { Link } from "react-router-dom";
 import { getUserInfo } from "../../services/userServices";
 import { getReadableDate } from "../../helpers";
+import { useSelector } from "react-redux";
 const PostCard = ({ postInfo }) => {
+  const authState = useSelector((state) => state.auth);
   const { uid, media, postDescription, likes, comments, createdAt } = postInfo;
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +33,7 @@ const PostCard = ({ postInfo }) => {
   return (
     <div className="h-full w-full mb-4 shadow-md">
       <section className="flex justify-start items-center gap-4 px-2">
-        <Link to={`/profile/${currPostUser.uid}`}>
+        <Link to={`/profile/${uid}`}>
           <img
             src={currPostUser.photoURL}
             alt={currPostUser.displayName}
@@ -41,7 +43,9 @@ const PostCard = ({ postInfo }) => {
         <section className="flex justify-start items-start gap-0 flex-col">
           <p className="text-md font-medium">{`${currPostUser.displayName}`}</p>
           <p className="text-sm font-normal">{`@${currPostUser.username}`}</p>
-          <p className="text-xs font-light">{getReadableDate(createdAt)}</p>
+          <p className="text-xs font-light">
+            {getReadableDate(createdAt?.seconds)}
+          </p>
         </section>
         <section className="ml-auto relative">
           <button
@@ -57,7 +61,7 @@ const PostCard = ({ postInfo }) => {
               !showOptions && "opacity-0 pointer-events-none"
             } transition-all flex justify-start items-start flex-col gap-1 bg-accent-2/70 p-1 rounded-md `}
           >
-            {currPostUser.uid === uid && (
+            {currPostUser.uid === authState.uid && (
               <button
                 onClick={() => {
                   setShowModal(true);
@@ -69,7 +73,7 @@ const PostCard = ({ postInfo }) => {
                 <span className="whitespace-nowrap">Edit</span>
               </button>
             )}
-            {currPostUser.uid === uid && (
+            {currPostUser.uid === authState.uid && (
               <button className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full">
                 <AiFillDelete />
                 <span className="whitespace-nowrap">Delete</span>
