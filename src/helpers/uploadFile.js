@@ -23,7 +23,7 @@ export const deleteFile = async (file, setCredentials) => {
   // console.log(file);
 };
 
-export const uploadFile = (file, setValid, setCredentials, isSingleFile) => {
+export const uploadFile = (file, setValid, setter, isSingleFile, fieldName) => {
   const fileName = new Date().getTime() + file.name;
   const storageRef = ref(storage, fileName);
   const uploadTask = uploadBytesResumable(storageRef, file);
@@ -58,11 +58,11 @@ export const uploadFile = (file, setValid, setCredentials, isSingleFile) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((photoURL) => {
-        setCredentials((state) => ({
+        setter((state) => ({
           ...state,
-          photoURL: isSingleFile
+          [fieldName]: isSingleFile
             ? [photoURL]
-            : [...state, [...state.photoURL, photoURL]],
+            : [...state, [...state[fieldName], photoURL]],
         }));
       });
     }
