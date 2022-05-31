@@ -91,21 +91,25 @@ const PostCard = ({ postInfo }) => {
           </section>
         </section>
       </section>
-      <p className="px-2 my-2">
-        <span>
-          {showFullText
-            ? postInfo.postDescription
-            : `${postInfo.postDescription.substring(0, 50)}... `}
-          {
-            <button
-              className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
-              onClick={() => setShowFullText((state) => !state)}
-            >
-              {showFullText ? "Show less" : "Show more"}
-            </button>
-          }
-        </span>
-      </p>
+
+      {postInfo.postDescription.length < 50 ? (
+        <p className="px-2 my-1">{postInfo.postDescription}</p>
+      ) : (
+        <p className="px-2 my-1">
+          <span>
+            {showFullText
+              ? postInfo.postDescription
+              : postInfo.postDescription.substring(0, 50)}
+          </span>{" "}
+          <button
+            className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
+            onClick={() => setShowFullText((state) => !state)}
+          >
+            {showFullText ? "Show less" : "Show more"}
+          </button>
+        </p>
+      )}
+
       {media.length > 0 && (
         <img
           src={media[0]}
