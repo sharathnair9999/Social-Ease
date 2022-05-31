@@ -60,8 +60,8 @@ export const uploadFile = (file, setValid, setter, isSingleFile, fieldName) => {
         setter((state) => ({
           ...state,
           [fieldName]: isSingleFile
-            ? [photoURL]
-            : [...state, [...state[fieldName], photoURL]],
+            ? [`${photoURL}`]
+            : [...state[fieldName], `${photoURL}`],
         }));
       });
     }
