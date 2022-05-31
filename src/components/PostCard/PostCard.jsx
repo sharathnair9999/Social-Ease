@@ -49,47 +49,49 @@ const PostCard = ({ postInfo }) => {
             {getReadableDate(createdAt?.seconds)}
           </p>
         </section>
-        <section className="ml-auto relative">
-          <button
-            onClick={() => setShowOptions((state) => !state)}
-            className="bg-transparent flex justify-center items-center transition-all hover:bg-cta-light hover:shadow-sm rounded-full w-8 h-8"
-          >
-            <FiMoreHorizontal size={"1.1rem"} />
-          </button>
-
-          <section
-            ref={optionsRef}
-            className={`absolute top-8 right-0 ${
-              !showOptions && "opacity-0 pointer-events-none"
-            } transition-all flex justify-start items-start flex-col gap-1 bg-accent-2/70 p-1 rounded-md `}
-          >
-            {currPostUser.uid === authState.uid && (
-              <button
-                onClick={() => {
-                  setShowModal(true);
-                  setShowOptions(false);
-                }}
-                className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
-              >
-                <BiEditAlt />
-                <span className="whitespace-nowrap">Edit</span>
-              </button>
-            )}
-            {currPostUser.uid === authState.uid && (
-              <button
-                onClick={() => deletePost(postInfo.postId)}
-                className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
-              >
-                <AiFillDelete />
-                <span className="whitespace-nowrap">Delete</span>
-              </button>
-            )}
-            <button className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full">
-              <BsFillBookmarkCheckFill />
-              <span className="whitespace-nowrap">Add to Bookmarks</span>
+        {authState.isLoggedIn && (
+          <section className="ml-auto relative">
+            <button
+              onClick={() => setShowOptions((state) => !state)}
+              className="bg-transparent flex justify-center items-center transition-all hover:bg-cta-light hover:shadow-sm rounded-full w-8 h-8"
+            >
+              <FiMoreHorizontal size={"1.1rem"} />
             </button>
+
+            <section
+              ref={optionsRef}
+              className={`absolute top-8 right-0 ${
+                !showOptions && "opacity-0 pointer-events-none"
+              } transition-all flex justify-start items-start flex-col gap-1 bg-accent-2/70 p-1 rounded-md `}
+            >
+              {currPostUser.uid === authState.uid && (
+                <button
+                  onClick={() => {
+                    setShowModal(true);
+                    setShowOptions(false);
+                  }}
+                  className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
+                >
+                  <BiEditAlt />
+                  <span className="whitespace-nowrap">Edit</span>
+                </button>
+              )}
+              {currPostUser.uid === authState.uid && (
+                <button
+                  onClick={() => deletePost(postInfo.postId)}
+                  className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
+                >
+                  <AiFillDelete />
+                  <span className="whitespace-nowrap">Delete</span>
+                </button>
+              )}
+              <button className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full">
+                <BsFillBookmarkCheckFill />
+                <span className="whitespace-nowrap">Add to Bookmarks</span>
+              </button>
+            </section>
           </section>
-        </section>
+        )}
       </section>
 
       {postInfo.postDescription.length < 50 ? (
