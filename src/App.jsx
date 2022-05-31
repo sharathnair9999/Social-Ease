@@ -108,11 +108,9 @@ function App() {
         <Route
           path="profile/:profileId"
           element={
-            <ProtectedRoute route={"/login"}>
-              <MainContainer>
-                <UserProfile />
-              </MainContainer>
-            </ProtectedRoute>
+            <MainContainer>
+              <UserProfile />
+            </MainContainer>
           }
         />
         <Route
