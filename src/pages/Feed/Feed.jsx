@@ -1,12 +1,21 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Modal, PostCard, PostEditor } from "../../components";
+import { allPostsListener } from "../../services";
+import { getAllPosts } from "../../features/Posts/postSlice";
 
 const Feed = () => {
   const { displayName, photoURL, uid } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
   const ref = React.createRef();
+
+  const { allPosts } = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    allPostsListener(dispatch, getAllPosts);
+  }, []);
 
   return (
     <div>
@@ -37,14 +46,8 @@ const Feed = () => {
         </section>
       </div>
 
-      {[...Array(10)].map((_, id) => (
-        <PostCard
-          key={id}
-          postInfo={{
-            postDescription: `post${id + 1}`,
-            postId: `adslkjaskl${id + 1}`,
-          }}
-        />
+      {allPosts?.map((post) => (
+        <PostCard key={post.postId} postInfo={post} />
       ))}
     </div>
   );
