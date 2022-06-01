@@ -8,6 +8,8 @@ import MainContainer from "./MainContainer/MainContainer";
 import UserProfile from "./UserProfile/UserProfile";
 import Explore from "./Explore/Explore";
 import ErrorPage from "./ErrorPage/ErrorPage";
+import LikedPosts from "./LikedPosts";
+import UserPosts from "./UserPosts";
 
 export {
   Login,
@@ -20,4 +22,6 @@ export {
   UserProfile,
   Explore,
   ErrorPage,
+  LikedPosts,
+  UserPosts,
 };

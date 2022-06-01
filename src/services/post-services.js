@@ -1,5 +1,7 @@
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -26,9 +28,14 @@ export const allPostsListener = async (dispatch, getAllPosts) => {
 
 export const addNewPost = async (details) => {
   try {
-    await addDoc(collection(db, "posts"), {
+    const postRef = await addDoc(collection(db, "posts"), {
       ...details,
       createdAt: serverTimestamp(),
+    });
+    // Add the post id into the posts array of user's profile details to show in the profile page of the user
+    const userRef = doc(db, "users", details.uid);
+    await updateDoc(userRef, {
+      posts: arrayUnion(postRef.id),
     });
   } catch (error) {
     toast.error(error.message);
@@ -37,9 +44,9 @@ export const addNewPost = async (details) => {
 
 export const editPost = async (details) => {
   try {
-    const postRef = doc(db, "posts", details.postId);
+    const postsRef = doc(db, "posts", details.postId);
 
-    await updateDoc(postRef, {
+    await updateDoc(postsRef, {
       ...details,
     });
     toast.success("Updated Post Successfully");
@@ -48,10 +55,15 @@ export const editPost = async (details) => {
   }
 };
 
-export const deletePost = async (id) => {
+export const deletePost = async (postId, uid) => {
   try {
-    await deleteDoc(doc(db, "posts", id));
+    await deleteDoc(doc(db, "posts", postId));
     toast.success("Delete Post Successully");
+    // After deleting from the post from "posts" db, it should removed from the author's (user's) posts data
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+      posts: arrayRemove(postId),
+    });
   } catch (error) {
     toast.error(error.message);
   }

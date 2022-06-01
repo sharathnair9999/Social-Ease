@@ -21,3 +21,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(335, 77%, 60%);
 }
+
+.follow-more::-webkit-scrollbar {
+  display: none;
+}

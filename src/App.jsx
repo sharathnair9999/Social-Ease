@@ -8,11 +8,13 @@ import {
   ErrorPage,
   Explore,
   Feed,
+  LikedPosts,
   Login,
   MainContainer,
   People,
   Signup,
   SinglePost,
+  UserPosts,
   UserProfile,
 } from "./pages";
 import { Footer } from "./components";
@@ -108,13 +110,29 @@ function App() {
         <Route
           path="profile/:profileId"
           element={
-            <ProtectedRoute route={"/login"}>
-              <MainContainer>
-                <UserProfile />
-              </MainContainer>
-            </ProtectedRoute>
+            <MainContainer>
+              <UserProfile />
+            </MainContainer>
           }
-        />
+        >
+          <Route index element={<UserPosts />} />
+          <Route
+            path="bookmarks"
+            element={
+              <ProtectedRoute route={"/login"} onlyLoggedUserRoute>
+                <Bookmarks />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="likes"
+            element={
+              <ProtectedRoute route={"/likes"} onlyLoggedUserRoute>
+                <LikedPosts />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         <Route
           path="post/:postId"
           element={

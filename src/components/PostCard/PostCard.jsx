@@ -17,7 +17,8 @@ import { useSelector } from "react-redux";
 import { deletePost } from "../../services";
 const PostCard = ({ postInfo }) => {
   const authState = useSelector((state) => state.auth);
-  const { uid, media, postDescription, likes, comments, createdAt } = postInfo;
+  const { uid, media, postDescription, likes, comments, createdAt, postId } =
+    postInfo;
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openLikesModal, setOpenLikesModal] = useState(false);
@@ -29,7 +30,7 @@ const PostCard = ({ postInfo }) => {
 
   useEffect(() => {
     getUserInfo(uid, setCurrPostUser);
-  }, []);
+  }, [uid]);
 
   useOnClickOutside(optionsRef, () => setShowOptions(false));
   return (
@@ -78,7 +79,7 @@ const PostCard = ({ postInfo }) => {
               )}
               {currPostUser.uid === authState.uid && (
                 <button
-                  onClick={() => deletePost(postInfo.postId)}
+                  onClick={() => deletePost(postInfo.postId, authState.uid)}
                   className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
                 >
                   <AiFillDelete />
@@ -94,15 +95,21 @@ const PostCard = ({ postInfo }) => {
         )}
       </section>
 
-      {postInfo.postDescription.length < 50 ? (
-        <p className="px-2 my-1">{postInfo.postDescription}</p>
+      {postInfo.postDescription.length < 60 ? (
+        <Link to={`/post/${postInfo.postId}`}>
+          <p className="px-2 my-1">{postInfo.postDescription}</p>
+        </Link>
       ) : (
         <p className="px-2 my-1">
-          <span>
-            {showFullText
-              ? postInfo.postDescription
-              : postInfo.postDescription.substring(0, 50)}
-          </span>{" "}
+          {showFullText ? (
+            <Link to={`/post/${postInfo.postId}`}>
+              <span>{postInfo.postDescription}</span>
+            </Link>
+          ) : (
+            <Link
+              to={`/post/${postInfo.postId}`}
+            >{`${postInfo.postDescription.substring(0, 60)}... `}</Link>
+          )}{" "}
           <button
             className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
             onClick={() => setShowFullText((state) => !state)}
@@ -113,11 +120,13 @@ const PostCard = ({ postInfo }) => {
       )}
 
       {media.length > 0 && (
-        <img
-          src={media[0]}
-          alt={postDescription}
-          className="w-full py-2 h-auto"
-        />
+        <Link to={`/post/${postInfo.postId}`}>
+          <img
+            src={media[0]}
+            alt={postDescription}
+            className="w-full py-2 h-auto"
+          />
+        </Link>
       )}
       {likes.length > 0 && (
         <p
@@ -134,7 +143,7 @@ const PostCard = ({ postInfo }) => {
         </p>
       )}
       <section className="flex justify-between items-center px-1 py-2">
-        <PostActions />
+        <PostActions postId={postId} />
         <CommentsAndShares comments={comments} />
       </section>
       {showModal && (

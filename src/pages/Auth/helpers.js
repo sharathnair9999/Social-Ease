@@ -3,7 +3,14 @@ import {
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
-import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { auth, db } from "../../firebase-config";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-toastify";
@@ -83,6 +90,10 @@ export const signupUser = async (e, navigate, { ...details }) => {
     followers: [],
     following: [],
     likedPosts: [],
+    bookmarks: [],
+    bio: "",
+    link: "",
+    joinedAt: serverTimestamp(),
   });
   toast.success(
     `Welcome to SocialEase Fam, ${capitalize(details.displayName)}`
@@ -94,7 +105,6 @@ export const googleSignInHandler = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    localStorage.setItem("userDetails", JSON.stringify(user));
     const existingUser = await userExists(user.uid);
     if (!existingUser) {
       await updateProfile(user, {
@@ -110,6 +120,10 @@ export const googleSignInHandler = async () => {
         followers: [],
         following: [],
         likedPosts: [],
+        bookmarks: [],
+        bio: "",
+        link: "",
+        joinedAt: serverTimestamp(),
       });
       toast.success(`Hi ${capitalize(user.displayName)}`);
     } else {

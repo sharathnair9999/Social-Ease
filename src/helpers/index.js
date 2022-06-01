@@ -4,7 +4,7 @@ import { handleChange } from "./handleChange";
 import { debounce } from "./debounce";
 import { constants } from "./constants";
 import { uploadFile, deleteFile } from "./mediaHelpers";
-import { getReadableDate } from "./readableDate";
+import { getReadableDate, getMonthYear } from "./readableDate";
 
 export {
   ProtectedRoute,
@@ -15,4 +15,5 @@ export {
   constants,
   deleteFile,
   getReadableDate,
+  getMonthYear,
 };
