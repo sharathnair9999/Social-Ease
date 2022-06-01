@@ -10,6 +10,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { db } from "../firebase-config";
@@ -68,3 +69,33 @@ export const deletePost = async (postId, uid) => {
     toast.error(error.message);
   }
 };
+const postsRef = collection(db, "posts");
+export const latestUserPostsQuery = (profileId) =>
+  query(postsRef, where("uid", "==", profileId), orderBy("createdAt", "desc"));
+
+export const queryUserCollection = query(collection(db, "users"));
+
+export const userDocQuery = (uid) => doc(db, "users", uid);
+
+export const universalSnapshot = (query, setter, idFieldName) =>
+  onSnapshot(
+    query,
+    (querySnapshot) => {
+      const coll = [];
+      querySnapshot.forEach((doc) => {
+        coll.push({
+          [idFieldName]: doc.id,
+          ...doc.data(),
+        });
+      });
+      setter(coll);
+    },
+    (error) => {
+      toast.error(error.message);
+    }
+  );
+
+export const universalSnapShotDoc = (query, setter, idFieldName) =>
+  onSnapshot(query, (doc) => {
+    setter({ [idFieldName]: doc.id, ...doc.data() });
+  });
