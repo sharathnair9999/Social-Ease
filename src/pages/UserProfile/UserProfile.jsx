@@ -40,8 +40,6 @@ const UserProfile = () => {
         joinedAt: getMonthYear(doc.data().joinedAt.seconds),
         link: "",
       });
-      const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-      console.log(source, " data: ", doc.data());
     });
 
     return () => {

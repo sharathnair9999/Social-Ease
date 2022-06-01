@@ -25,8 +25,6 @@ export const Comment = ({ newComment, existingCommentInfo }) => {
     e.preventDefault();
   };
 
-  console.log(existingCommentInfo);
-
   useEffect(() => {
     existingCommentInfo?.uid &&
       getUserInfo(existingCommentInfo.uid, setCommentedUserInfo);

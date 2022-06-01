@@ -39,7 +39,7 @@ const SinglePost = () => {
         "Loading " //will updat with an svg soon
       ) : (
         <div>
-          <PostCard postInfo={singlePost} />
+          <PostCard postInfo={singlePost} enableComments />
         </div>
       )}
     </div>

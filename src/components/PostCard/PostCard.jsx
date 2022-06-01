@@ -15,14 +15,16 @@ import { getReadableDate } from "../../helpers";
 import { useSelector } from "react-redux";
 import { deletePost } from "../../services";
 import Comments from "./Comments";
-const PostCard = ({ postInfo }) => {
+const PostCard = ({ postInfo, enableComments }) => {
   const authState = useSelector((state) => state.auth);
   const { uid, media, postDescription, likes, createdAt, postId } = postInfo;
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openLikesModal, setOpenLikesModal] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(
+    enableComments ? true : false
+  );
   const likesModalRef = useRef();
   const editModalRef = useRef();
   const optionsRef = useRef();
