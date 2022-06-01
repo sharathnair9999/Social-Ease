@@ -119,7 +119,7 @@ function App() {
           <Route
             path="bookmarks"
             element={
-              <ProtectedRoute route={"/login"}>
+              <ProtectedRoute route={"/login"} onlyLoggedUserRoute>
                 <Bookmarks />
               </ProtectedRoute>
             }
@@ -127,7 +127,7 @@ function App() {
           <Route
             path="likes"
             element={
-              <ProtectedRoute route={"/likes"}>
+              <ProtectedRoute route={"/likes"} onlyLoggedUserRoute>
                 <LikedPosts />
               </ProtectedRoute>
             }
