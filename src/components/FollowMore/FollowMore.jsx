@@ -27,8 +27,6 @@ const FollowMore = () => {
     return unsubscribe;
   }, []);
 
-  console.log(userList);
-
   return (
     <div
       className={`follow-more lg:flex flex-col hidden md:fixed justify-start items-start gap-4 md:top-20 md:w-[16rem] lg:w-[17rem] md:right-4 h-96 overflow-y-auto  `}

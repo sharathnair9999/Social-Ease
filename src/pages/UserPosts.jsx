@@ -1,4 +1,10 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +16,11 @@ const UserPosts = () => {
   const [userPosts, setUserPosts] = useState([]);
   useEffect(() => {
     const postsRef = collection(db, "posts");
-    const q = query(postsRef, where("uid", "==", profileId));
+    const q = query(
+      postsRef,
+      where("uid", "==", profileId),
+      orderBy("createdAt", "desc")
+    );
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {

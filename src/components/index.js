@@ -9,7 +9,6 @@ import Button from "./Button";
 import Modal from "./Modal";
 import PostEditor from "./PostEditor";
 import PostActions from "./PostActions";
-import CommentsAndShares from "./CommentsAndShares";
 import PeopleListModal from "./PeopleListModal";
 import EmojiPicker from "./EmojiPicker";
 
@@ -25,7 +24,6 @@ export {
   Modal,
   PostEditor,
   PostActions,
-  CommentsAndShares,
   PeopleListModal,
   EmojiPicker,
 };

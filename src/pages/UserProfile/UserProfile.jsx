@@ -8,6 +8,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { getMonthYear } from "../../helpers";
+import { capitalize } from "../../helpers/constants";
 
 const UserProfile = () => {
   const { profileId } = useParams();
@@ -39,6 +40,8 @@ const UserProfile = () => {
         joinedAt: getMonthYear(doc.data().joinedAt.seconds),
         link: "",
       });
+      const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+      console.log(source, " data: ", doc.data());
     });
 
     return () => {
@@ -69,7 +72,9 @@ const UserProfile = () => {
         alt={userInfo.displayName}
       />
       <p className="flex justify-between w-full items-end gap-4">
-        <span className="font-extrabold text-2xl">{userInfo.displayName}</span>
+        <span className="font-extrabold text-2xl">
+          {capitalize(userInfo.displayName)}
+        </span>
         {isLoggedIn && profileId === uid && (
           <button
             className="bg-cta-dark text-white text-lg hover:bg-cta-dark/80 font-bold transition-all p-2 rounded-full flex justify-center items-center gap-2"
