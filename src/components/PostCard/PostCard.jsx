@@ -94,14 +94,14 @@ const PostCard = ({ postInfo }) => {
         )}
       </section>
 
-      {postInfo.postDescription.length < 50 ? (
+      {postInfo.postDescription.length < 60 ? (
         <p className="px-2 my-1">{postInfo.postDescription}</p>
       ) : (
         <p className="px-2 my-1">
           <span>
             {showFullText
               ? postInfo.postDescription
-              : postInfo.postDescription.substring(0, 50)}
+              : `${postInfo.postDescription.substring(0, 60)}... `}
           </span>{" "}
           <button
             className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"

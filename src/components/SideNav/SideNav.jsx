@@ -29,12 +29,6 @@ const SideNav = () => {
       protectedLink: false,
     },
     {
-      url: "/bookmarks",
-      display: "Bookmarks",
-      icon: <BsFillBookmarkCheckFill size={"1.5rem"} />,
-      protectedLink: true,
-    },
-    {
       url: `/profile/${uid}`,
       display: "My Profile",
       icon: (

@@ -1,9 +1,17 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { constants } from "../helpers";
 
 const Footer = () => {
+  const { pathname } = useLocation();
   return (
-    <footer className="bg-slate-800 px-4 py-2 flex justify-center items-center gap-1 flex-col w-full mb-14 md:mb-0 ">
+    <footer
+      className={`bg-slate-800 px-4 py-2 flex justify-center items-center gap-1 flex-col w-full  md:mb-0 ${
+        pathname === "/login" || pathname === "/signup"
+          ? " fixed bottom-0 left-0 right-0 mb-0"
+          : "mb-14"
+      } `}
+    >
       <p className="md:text-xl text-md text-slate-300 text-center">
         Created By{" "}
         <a
