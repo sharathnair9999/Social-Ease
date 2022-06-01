@@ -55,8 +55,6 @@ const UserProfile = () => {
     setModalTitle("Following");
   };
 
-  console.log(userInfo);
-
   return (
     <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
       <Modal showModal={showModal}>
