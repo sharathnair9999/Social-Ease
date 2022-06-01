@@ -3,10 +3,7 @@ import { useOnClickOutside } from "../custom-hooks";
 import PersonCard from "./PersonCard";
 
 const PeopleListModal = React.forwardRef(
-  (
-    { text, likesModal, followersModal, followingModal, people, setShowModal },
-    ref
-  ) => {
+  ({ text, people, setShowModal }, ref) => {
     useOnClickOutside(ref, () => setShowModal(false));
     return (
       <div
@@ -17,8 +14,17 @@ const PeopleListModal = React.forwardRef(
           {text}
         </p>
         <section className=" max-h-[21rem] overflow-y-auto flex justify-start items-start gap-4 flex-col">
-          {[...Array(20)].map((_, id) => (
-            <PersonCard key={id} id={id} />
+          {people?.map((_, id) => (
+            <PersonCard
+              key={id}
+              user={{
+                displayName: "Sharath",
+                photoURL:
+                  "https://lh3.googleusercontent.com/a-/AOh14GgbjT5Falp276vt_d-EEBSWKgflhT__G-qKQQFc5vU=s96-c",
+                uid: "fhkjdsh",
+                username: "sharathnair9999",
+              }}
+            />
           ))}
         </section>
       </div>
