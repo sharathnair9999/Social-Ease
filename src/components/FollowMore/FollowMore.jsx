@@ -1,33 +1,20 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { db } from "../../firebase-config";
+import { queryUserCollection, universalSnapshot } from "../../services";
 import PersonCard from "../PersonCard";
 
 const FollowMore = () => {
   const { uid } = useSelector((state) => state.auth);
   const [userList, setUserList] = useState([]);
   useEffect(() => {
-    const q = query(collection(db, "users"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const users = [];
-      querySnapshot.forEach((doc) => {
-        users.push({
-          uid: doc.id,
-          followers: doc.data().followers,
-          following: doc.data().following,
-          username: doc.data().username,
-          photoURL: doc.data().photoURL,
-          displayName: doc.data().displayName,
-        });
-        setUserList(users);
-      });
-    });
+    const unsubscribe = universalSnapshot(
+      queryUserCollection,
+      setUserList,
+      "uid"
+    );
 
     return unsubscribe;
   }, []);
-
-  console.log(userList);
 
   return (
     <div

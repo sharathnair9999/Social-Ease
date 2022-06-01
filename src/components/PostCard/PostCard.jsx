@@ -7,7 +7,6 @@ import { useOnClickOutside } from "../../custom-hooks";
 import Modal from "../Modal";
 import PostEditor from "../PostEditor";
 import PostActions from "../PostActions";
-import CommentsAndShares from "../CommentsAndShares";
 import { AiFillLike } from "react-icons/ai";
 import PeopleListModal from "../PeopleListModal";
 import { Link } from "react-router-dom";
@@ -15,18 +14,38 @@ import { getUserInfo } from "../../services/userServices";
 import { getReadableDate } from "../../helpers";
 import { useSelector } from "react-redux";
 import { deletePost } from "../../services";
-const PostCard = ({ postInfo }) => {
+import Comments from "./Comments";
+const PostCard = ({ postInfo, enableComments }) => {
   const authState = useSelector((state) => state.auth);
-  const { uid, media, postDescription, likes, comments, createdAt, postId } =
-    postInfo;
+  const { uid, media, postDescription, likes, createdAt, postId } = postInfo;
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openLikesModal, setOpenLikesModal] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
+  const [showComments, setShowComments] = useState(
+    enableComments ? true : false
+  );
   const likesModalRef = useRef();
   const editModalRef = useRef();
   const optionsRef = useRef();
   const [currPostUser, setCurrPostUser] = useState({});
+  const comments = [
+    {
+      commentId: "1",
+      comment: "Comment 1",
+      uid: "MHM8FdD5ROdOf285bhDHXfr6LPn2",
+    },
+    {
+      commentId: "2",
+      comment: "Comment 2",
+      uid: "H0maPlsU7WVO9tMJGEYfaYKPyDf2",
+    },
+    {
+      commentId: "3",
+      comment: "Comment 3",
+      uid: "yY2ABngg1rbHt16RTGFXBzwotZ82",
+    },
+  ];
 
   useEffect(() => {
     getUserInfo(uid, setCurrPostUser);
@@ -95,7 +114,7 @@ const PostCard = ({ postInfo }) => {
         )}
       </section>
 
-      {postInfo.postDescription.length < 60 ? (
+      {postInfo.postDescription?.length < 60 ? (
         <Link to={`/post/${postInfo.postId}`}>
           <p className="px-2 my-1">{postInfo.postDescription}</p>
         </Link>
@@ -108,7 +127,7 @@ const PostCard = ({ postInfo }) => {
           ) : (
             <Link
               to={`/post/${postInfo.postId}`}
-            >{`${postInfo.postDescription.substring(0, 60)}... `}</Link>
+            >{`${postInfo.postDescription?.substring(0, 60)}... `}</Link>
           )}{" "}
           <button
             className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
@@ -119,7 +138,7 @@ const PostCard = ({ postInfo }) => {
         </p>
       )}
 
-      {media.length > 0 && (
+      {media?.length > 0 && (
         <Link to={`/post/${postInfo.postId}`}>
           <img
             src={media[0]}
@@ -128,7 +147,7 @@ const PostCard = ({ postInfo }) => {
           />
         </Link>
       )}
-      {likes.length > 0 && (
+      {likes?.length > 0 && (
         <p
           onClick={() => setOpenLikesModal(true)}
           className="px-2 text-sm flex justify-start items-center gap-2"
@@ -138,14 +157,14 @@ const PostCard = ({ postInfo }) => {
             onClick={() => setOpenLikesModal(true)}
             className="hover:underline cursor-pointer"
           >
-            {`${likes.length} Likes`}
+            {`${likes?.length} Likes`}
           </span>
         </p>
       )}
-      <section className="flex justify-between items-center px-1 py-2">
-        <PostActions postId={postId} />
-        <CommentsAndShares comments={comments} />
-      </section>
+      <span className="flex justify-between items-center px-1 py-2">
+        <PostActions postId={postId} setShowComments={setShowComments} />
+        <span className="text-sm">{`${comments.length} comments`}</span>
+      </span>
       {showModal && (
         <Modal showModal={showModal}>
           <PostEditor
@@ -166,6 +185,7 @@ const PostCard = ({ postInfo }) => {
           />
         </Modal>
       )}
+      {showComments && <Comments comments={comments} />}
     </div>
   );
 };

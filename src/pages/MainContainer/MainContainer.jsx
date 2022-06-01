@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   FollowMore,
@@ -15,6 +15,11 @@ const MainContainer = ({ children }) => {
   const { pathname } = useLocation();
   const [showModal, setShowModal] = useState(false);
   const ref = useRef();
+  useEffect(() => {
+    (pathname.includes("/post") || pathname.includes("/profile")) &&
+      window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+
   return (
     <div className="min-h-screen flex justify-center items-start">
       <TopNav />

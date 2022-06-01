@@ -1,13 +1,12 @@
-import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useParams } from "react-router-dom";
 import { Modal, PeopleListModal } from "../../components";
-import { db } from "../../firebase-config";
 import EditProfileModal from "./components/EditProfileModal";
 import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import { getMonthYear } from "../../helpers";
+import { getMonthYear, capitalize } from "../../helpers";
+import { universalSnapShotDoc, userDocQuery } from "../../services";
 
 const UserProfile = () => {
   const { profileId } = useParams();
@@ -33,13 +32,11 @@ const UserProfile = () => {
 
   const [userInfo, setUserInfo] = useState(initialUserInfo);
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, "users", profileId), (doc) => {
-      setUserInfo({
-        ...doc.data(),
-        joinedAt: getMonthYear(doc.data().joinedAt.seconds),
-        link: "",
-      });
-    });
+    const unsubscribe = universalSnapShotDoc(
+      userDocQuery(profileId),
+      setUserInfo,
+      "uid"
+    );
 
     return () => {
       unsubscribe();
@@ -58,6 +55,8 @@ const UserProfile = () => {
     setModalTitle("Following");
   };
 
+  console.log(userInfo);
+
   return (
     <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
       <Modal showModal={showModal}>
@@ -69,7 +68,9 @@ const UserProfile = () => {
         alt={userInfo.displayName}
       />
       <p className="flex justify-between w-full items-end gap-4">
-        <span className="font-extrabold text-2xl">{userInfo.displayName}</span>
+        <span className="font-extrabold text-2xl">
+          {capitalize(userInfo.displayName)}
+        </span>
         {isLoggedIn && profileId === uid && (
           <button
             className="bg-cta-dark text-white text-lg hover:bg-cta-dark/80 font-bold transition-all p-2 rounded-full flex justify-center items-center gap-2"
@@ -95,7 +96,9 @@ const UserProfile = () => {
           </span>
         )}
       </section>
-      <p className="text-sm">{`Joined on ${userInfo.joinedAt}`}</p>
+      <p className="text-sm">{`Joined on ${getMonthYear(
+        userInfo.joinedAt.seconds
+      )}`}</p>
       <p className="flex justify-start items-center gap-10 my-1">
         <button
           onClick={handleFollowersModal}

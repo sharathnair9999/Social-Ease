@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useOnClickOutside } from "../custom-hooks";
 import { deleteFile, handleChange, uploadFile } from "../helpers";
 import { BsFillImageFill } from "react-icons/bs";
-import Picker from "emoji-picker-react";
 import { ref as firestoreRef } from "firebase/storage";
 import { storage } from "../firebase-config";
 import { AiFillDelete } from "react-icons/ai";
 import { addNewPost, editPost } from "../services";
 import Button from "./Button";
 import { useSelector } from "react-redux";
+import EmojiPicker from "./EmojiPicker";
 
 const PostEditor = React.forwardRef(
   ({ newPost, existingPostInfo, setShowModal }, ref) => {
@@ -65,12 +65,6 @@ const PostEditor = React.forwardRef(
       );
     }, [images]);
 
-    const onEmojiClick = (event, emojiObject) => {
-      setPostDetails((state) => ({
-        ...state,
-        postDescription: state.postDescription + emojiObject.emoji,
-      }));
-    };
     return (
       <form
         className={`md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
@@ -131,22 +125,13 @@ const PostEditor = React.forwardRef(
           >
             😀
           </button>
-          {showEmojis ? (
-            <div
+          {showEmojis && (
+            <EmojiPicker
               ref={emojisRef}
-              className=" flex justify-start items-start flex-col absolute bottom-[-5rem] left-full md:left-[10rem] "
-            >
-              <button
-                type="button"
-                className="ml-auto"
-                onClick={() => setShowEmojis(false)}
-              >
-                x
-              </button>
-              <Picker disableAutoFocus={true} onEmojiClick={onEmojiClick} />
-            </div>
-          ) : (
-            ""
+              setShowEmojis={setShowEmojis}
+              setDetails={setPostDetails}
+              fieldName="postDescription"
+            />
           )}
           <section className="ml-auto flex justify-center items-center gap-2">
             <Button
