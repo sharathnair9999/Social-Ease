@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { MdOutlineFeed, MdExplore, MdPeopleAlt } from "react-icons/md";
-import { BsFillBookmarkCheckFill } from "react-icons/bs";
+import { universalSnapShotDoc, userDocQuery } from "../../services";
 
 const SideNav = () => {
-  const { isLoggedIn, uid, displayName, photoURL } = useSelector(
-    (state) => state.auth
-  );
+  const { isLoggedIn, uid } = useSelector((state) => state.auth);
+  const [userInfo, setUserInfo] = useState({
+    displayName: "",
+    photoURL: "",
+    username: "",
+  });
+
+  useEffect(() => {
+    const unsubscribe =
+      uid && universalSnapShotDoc(userDocQuery(uid), setUserInfo, "uid");
+
+    return uid ? unsubscribe : () => {};
+  }, [uid]);
 
   const links = [
     {
@@ -33,8 +43,8 @@ const SideNav = () => {
       display: "My Profile",
       icon: (
         <img
-          src={photoURL}
-          alt={displayName}
+          src={userInfo.photoURL}
+          alt={userInfo.displayName}
           className="w-6 h-6 md:h-10 md:w-10 rounded-full"
         />
       ),
