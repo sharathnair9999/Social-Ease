@@ -7,7 +7,7 @@ import {
   uploadFile,
 } from "../../helpers";
 import { useNavigate } from "react-router-dom";
-import Input from "./components/Input";
+import Input from "../../components/Input";
 import { signupUser, userNameExists } from "./helpers";
 import { Brand } from "../../components";
 import { FiUpload } from "react-icons/fi";
@@ -20,28 +20,24 @@ const Signup = () => {
   const navigate = useNavigate();
   const [isValidDetails, setisValidDetails] = useState(true);
   const [isValidUsername, setIsValidUsername] = useState(true);
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState("");
   const initialDP = constants.imgUrls.userPlaceholder;
   const initialCredentialState = {
     email: "",
     password: "",
     gender: "",
-    photoURL: [initialDP],
+    photoURL: initialDP,
     displayName: "",
     username: "",
   };
   const [credentials, setCredentials] = useState(initialCredentialState);
 
   useEffect(() => {
-    file.length > 0 &&
-      file.forEach((img) =>
-        uploadFile(img, setisValidDetails, setCredentials, true, "photoURL")
-      );
-    return () => {
-      setCredentials(initialCredentialState);
-      setFile([]);
-    };
-  }, [file[0]]);
+    if (file) {
+      uploadFile(file, setisValidDetails, setCredentials, true, "photoURL");
+      setFile("");
+    }
+  }, [file]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUsername = useCallback(
@@ -54,10 +50,11 @@ const Signup = () => {
 
   const deletePhoto = async () => {
     await deleteFile(
-      ref(storage, credentials.photoURL[0]),
+      ref(storage, credentials.photoURL),
       setCredentials,
       "photoURL"
     );
+    setFile("");
   };
 
   return (
@@ -70,15 +67,17 @@ const Signup = () => {
         >
           <section className="relative ">
             <img
-              src={credentials.photoURL[0]}
+              src={credentials.photoURL}
               alt="userlogo"
               className=" w-[5rem] h-[5rem] p-1 rounded-full "
             />
-            {credentials.photoURL[0] !== initialDP && (
+            {credentials.photoURL !== initialDP && (
               <button
                 type="button"
                 className="absolute top-0 right-[-5px] text-red-500 text-md"
-                onClick={() => deletePhoto()}
+                onClick={() => {
+                  deletePhoto();
+                }}
               >
                 <AiFillDelete size={"1.2rem"} />
               </button>
@@ -89,7 +88,7 @@ const Signup = () => {
                 name="file"
                 id="file"
                 className=" absolute overflow-hidden hidden z-[-1]"
-                onChange={(e) => setFile(() => [e.target.files[0]])}
+                onChange={(e) => setFile(e.target.files[0])}
               />
               <label
                 htmlFor="file"
@@ -127,6 +126,8 @@ const Signup = () => {
             isValidUsername={isValidUsername}
             type="text"
             name="username"
+            pattern="^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"
+            title="Invalid username format"
             value={credentials.username}
             className={`${
               credentials.username.length > 0

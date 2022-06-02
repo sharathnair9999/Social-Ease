@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
@@ -17,7 +18,7 @@ import { toast } from "react-toastify";
 import { capitalize } from "../../helpers/constants";
 const provider = new GoogleAuthProvider();
 
-export const userNameExists = async (text, setter) => {
+export const userNameExists = async (text, setter, isUpdating, prevValue) => {
   try {
     const q = query(collection(db, "users"));
     const docSnap = await getDocs(q);
@@ -25,12 +26,18 @@ export const userNameExists = async (text, setter) => {
     const allUsers = [];
 
     docSnap.forEach((doc) => {
-      allUsers.push({ id: doc.id, ...doc.data() });
+      allUsers.push({ id: doc.id, username: doc.data().username });
     });
 
-    const isExistingUsername = allUsers.some(
-      ({ username }) => username === text
-    );
+    const isExistingUsername = isUpdating
+      ? allUsers
+          .filter(
+            ({ username }) => username.toLowerCase() !== prevValue.toLowerCase()
+          )
+          .some(({ username }) => username.toLowerCase() === text.toLowerCase())
+      : allUsers.some(
+          ({ username }) => username.toLowerCase() === text.toLowerCase()
+        );
 
     if (isExistingUsername) {
       setter(false);
@@ -78,12 +85,12 @@ export const signupUser = async (e, navigate, { ...details }) => {
   );
   await updateProfile(currentUser, {
     displayName: details.displayName,
-    photoURL: details.photoURL[0],
+    photoURL: details.photoURL,
   });
 
   await setDoc(doc(db, "users", currentUser.uid), {
     displayName: details.displayName,
-    photoURL: details.photoURL[0],
+    photoURL: details.photoURL,
     gender: details.gender,
     username: details.username,
     posts: [],
@@ -99,6 +106,18 @@ export const signupUser = async (e, navigate, { ...details }) => {
     `Welcome to SocialEase Fam, ${capitalize(details.displayName)}`
   );
   navigate("/login");
+};
+
+export const loginUser = async (e, enteredEmail, password) => {
+  e.preventDefault();
+  try {
+    const {
+      user: { displayName },
+    } = await signInWithEmailAndPassword(auth, enteredEmail, password);
+    toast.success(`Welcome Back ${capitalize(displayName)}!`);
+  } catch (error) {
+    toast.error(error.message);
+  }
 };
 
 export const googleSignInHandler = async () => {

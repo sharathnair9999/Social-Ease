@@ -97,5 +97,5 @@ export const universalSnapshot = (query, setter, idFieldName) =>
 
 export const universalSnapShotDoc = (query, setter, idFieldName) =>
   onSnapshot(query, (doc) => {
-    setter({ [idFieldName]: doc.id, ...doc.data() });
+    setter((state) => ({ ...state, [idFieldName]: doc.id, ...doc.data() }));
   });
