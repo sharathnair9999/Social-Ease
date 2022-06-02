@@ -1,4 +1,4 @@
-import { logout } from "./authServices";
+import { logout, updateUserProfile } from "./authServices";
 import {
   addNewPost,
   editPost,
@@ -21,4 +21,5 @@ export {
   queryUserCollection,
   userDocQuery,
   universalSnapShotDoc,
+  updateUserProfile,
 };
