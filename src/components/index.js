@@ -11,6 +11,7 @@ import PostEditor from "./PostEditor";
 import PostActions from "./PostActions";
 import PeopleListModal from "./PeopleListModal";
 import EmojiPicker from "./EmojiPicker";
+import Input from "./Input";
 
 export {
   SearchBar,
@@ -26,4 +27,5 @@ export {
   PostActions,
   PeopleListModal,
   EmojiPicker,
+  Input,
 };

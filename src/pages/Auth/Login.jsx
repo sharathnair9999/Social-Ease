@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
 import { handleChange } from "../../helpers";
 import { useNavigate } from "react-router-dom";
-import Input from "./components/Input";
+import Input from "../../components/Input";
 import { Brand } from "../../components";
-import { googleSignInHandler } from "./helpers";
+import { googleSignInHandler, loginUser } from "./helpers";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "../../components";
-import { toast } from "react-toastify";
-import { capitalize } from "../../helpers/constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,13 +14,6 @@ const Login = () => {
     password: "",
   };
   const [credentials, setCredentials] = useState(initialCredentialState);
-  const loginUser = async (e, enteredEmail, password) => {
-    e.preventDefault();
-    const {
-      user: { displayName },
-    } = await signInWithEmailAndPassword(auth, enteredEmail, password);
-    toast.success(`Welcome Back ${capitalize(displayName)}!`);
-  };
 
   const loginWithGoogle = async () => {
     await googleSignInHandler();

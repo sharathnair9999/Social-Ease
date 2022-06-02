@@ -15,7 +15,7 @@ export const deleteFile = async (file, stateSetter, fieldName) => {
     stateSetter((state) => ({
       ...state,
       [fieldName]:
-        fieldName === "media" ? [] : [constants.imgUrls.userPlaceholder],
+        fieldName === "media" ? [] : constants.imgUrls.userPlaceholder,
     }));
   } catch (error) {
     toast.error("Could not delete file");
@@ -60,7 +60,7 @@ export const uploadFile = (file, setValid, setter, isSingleFile, fieldName) => {
         setter((state) => ({
           ...state,
           [fieldName]: isSingleFile
-            ? [`${photoURL}`]
+            ? `${photoURL}`
             : [...state[fieldName], `${photoURL}`],
         }));
       });

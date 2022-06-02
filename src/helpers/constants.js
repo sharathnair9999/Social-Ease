@@ -1,25 +1,19 @@
+const storageURL =
+  "https://res.cloudinary.com/sharath-media-library/image/upload";
+const storageFolder = "social%20media";
 export const constants = {
   imgUrls: {
-    userPlaceholder:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653724138/social%20media/user-default_idyg7v.jpg",
-    appLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653581502/social%20media/sm-logo_ukggxg.png",
-    reactLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653754223/social%20media/icons8-react-native_srgtib.svg",
-    firebaseLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653754223/social%20media/icons8-firebase-48_m64sqd.png",
-    reduxLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653754223/social%20media/icons8-redux-48_whl4yx.png",
-    tailwindLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653754223/social%20media/tailwind-css_mzocmr.svg",
-    hashnodeLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653755115/social%20media/icons8-hashnode-48_mckcy7.png",
-    githubLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653755115/social%20media/icons8-github-48_ov0ftw.png",
-    linkedinLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653755115/social%20media/icons8-linkedin-2-48_smjbd0.png",
-    twitterLogo:
-      "https://res.cloudinary.com/sharath-media-library/image/upload/v1653755115/social%20media/icons8-twitter-48_ukzjgp.png",
+    userPlaceholder: `${storageURL}/v1653724138/${storageFolder}/user-default_idyg7v.jpg`,
+    appLogo: `${storageURL}/v1653581502/${storageFolder}/sm-logo_ukggxg.png`,
+    reactLogo: `${storageURL}/v1653754223/${storageFolder}/icons8-react-native_srgtib.svg`,
+    firebaseLogo: `${storageURL}/v1653754223/${storageFolder}/icons8-firebase-48_m64sqd.png`,
+    reduxLogo: `${storageURL}/v1653754223/${storageFolder}/icons8-redux-48_whl4yx.png`,
+    tailwindLogo: `${storageURL}/v1653754223/${storageFolder}/tailwind-css_mzocmr.svg`,
+    hashnodeLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-hashnode-48_mckcy7.png`,
+    githubLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-github-48_ov0ftw.png`,
+    linkedinLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-linkedin-2-48_smjbd0.png`,
+    twitterLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-twitter-48_ukzjgp.png`,
+    invalidUser: `${storageURL}/v1654159858/${storageFolder}/user-invalid-icon_oyylty.png`,
   },
 };
 
