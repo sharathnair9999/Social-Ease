@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Modal, PostCard, PostEditor } from "../../components";
-import { allPostsListener } from "../../services";
-import { getAllPosts } from "../../features/Posts/postSlice";
-
+import { fetchFeedPosts } from "../../services";
+// Feed posts should contain only the posts of people that you follow. Will handle this after implementing follow feature
 const Feed = () => {
   const { displayName, photoURL, uid } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
   const ref = React.createRef();
 
-  const { allPosts } = useSelector((state) => state.posts);
+  const { feedPosts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    allPostsListener(dispatch, getAllPosts);
-  }, []);
+    dispatch(fetchFeedPosts(uid));
+  }, [dispatch, uid]);
 
   return (
     <div>
@@ -46,7 +45,7 @@ const Feed = () => {
         </section>
       </div>
 
-      {allPosts?.map((post) => (
+      {feedPosts?.map((post) => (
         <PostCard key={post.postId} postInfo={post} />
       ))}
     </div>
