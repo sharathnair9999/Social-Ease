@@ -114,7 +114,7 @@ const PostEditor = React.forwardRef(
             />
             <label
               htmlFor="file"
-              className="bg-slate-100 flex justify-center items-center rounded-full cursor-pointer p-2 hover:bg-slate-200 transition"
+              className="bg-slate-100 flex justify-center items-center rounded-full object-cover cursor-pointer p-2 hover:bg-slate-200 transition"
             >
               <BsFillImageFill size={"1rem"} />
             </label>

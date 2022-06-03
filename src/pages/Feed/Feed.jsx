@@ -27,7 +27,7 @@ const Feed = () => {
             <img
               src={photoURL}
               alt={displayName}
-              className={`w-12 h-12 rounded-full`}
+              className={`w-12 h-12 rounded-full object-cover `}
             />
           </Link>
           <input

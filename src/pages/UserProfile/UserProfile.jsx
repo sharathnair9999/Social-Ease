@@ -43,7 +43,7 @@ const UserProfile = () => {
       <img
         className={`md:w-32 ${
           !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
-        } md:h-32 w-24 h-24  mx-auto mb-2`}
+        } md:h-32 w-24 h-24  mx-auto mb-2 object-cover `}
         src={
           userInfo?.photoURL ? userInfo.photoURL : constants.imgUrls.invalidUser
         }

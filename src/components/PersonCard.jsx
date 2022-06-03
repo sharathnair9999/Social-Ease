@@ -10,7 +10,7 @@ const PersonCard = ({ user }) => {
         <img
           src={photoURL}
           alt={displayName}
-          className="w-10 h-10 rounded-full"
+          className="w-10 h-10 rounded-full object-cover"
         />
       </Link>
       <section className="flex justify-start items-start gap-0 flex-col">

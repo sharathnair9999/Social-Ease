@@ -96,7 +96,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
           />
           <label
             htmlFor="file"
-            className="bg-slate-100 p-1 flex justify-center items-center rounded-full cursor-pointer hover:bg-slate-200 transition"
+            className="bg-slate-100 p-1 flex justify-center items-center rounded-full object-cover cursor-pointer hover:bg-slate-200 transition"
           >
             <FiUpload size={"1rem"} />
           </label>

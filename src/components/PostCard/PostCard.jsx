@@ -68,7 +68,7 @@ const PostCard = ({ postInfo, enableComments }) => {
           <img
             src={photoURL}
             alt={displayName}
-            className="w-12 h-12 rounded-full"
+            className="w-12 h-12 rounded-full object-cover"
           />
         </Link>
         <section className="flex justify-start items-start gap-0 flex-col">

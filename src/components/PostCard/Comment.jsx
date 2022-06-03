@@ -41,7 +41,7 @@ export const Comment = ({ newComment, existingCommentInfo }) => {
         }
       >
         <img
-          className="w-10 h-10 rounded-full mb-auto"
+          className="w-10 h-10 rounded-full mb-auto object-cover "
           src={newComment ? photoURL : commentedUserInfo.photoURL}
           alt={newComment ? displayName : commentedUserInfo.displayName}
         />

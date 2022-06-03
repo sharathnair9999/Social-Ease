@@ -45,7 +45,7 @@ const SideNav = () => {
         <img
           src={userInfo.photoURL}
           alt={userInfo.displayName}
-          className="w-6 h-6 md:h-10 md:w-10 rounded-full"
+          className="w-6 h-6 md:h-10 md:w-10 rounded-full object-cover"
         />
       ),
       protectedLink: true,
