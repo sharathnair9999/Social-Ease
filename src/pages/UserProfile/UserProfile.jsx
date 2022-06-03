@@ -4,49 +4,25 @@ import { Modal, PeopleListModal } from "../../components";
 import EditProfileModal from "./components/EditProfileModal";
 import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getMonthYear, capitalize, constants } from "../../helpers";
-import { universalSnapShotDoc, userDocQuery } from "../../services";
-import { toast } from "react-toastify";
+import { fetchUserInfo } from "../../services";
 
 const UserProfile = () => {
   const { uid, isLoggedIn } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const { profileId } = useParams();
-  const initialUserInfo = {
-    displayName: "",
-    photoURL: "",
-    username: "",
-    joinedAt: "",
-    bookmarks: [],
-    followers: [],
-    following: [],
-    likedPosts: [],
-    posts: [],
-    bio: "",
-    link: "",
-  };
-  const [userInfo, setUserInfo] = useState(initialUserInfo);
   const [showModal, setShowModal] = useState(false);
   const [people, setPeople] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const [showPeopleModal, setShowPeopleModal] = useState(false);
   const peopleModalRef = useRef();
 
-  useEffect(() => {
-    try {
-      const unsubscribe = universalSnapShotDoc(
-        userDocQuery(profileId),
-        setUserInfo,
-        "uid"
-      );
+  const userInfo = useSelector((state) => state.user);
 
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }, [profileId]);
+  useEffect(() => {
+    dispatch(fetchUserInfo(profileId));
+  }, [dispatch, profileId]);
 
   const handleFollowersModal = () => {
     setShowPeopleModal(true);
@@ -67,7 +43,7 @@ const UserProfile = () => {
       <img
         className={`md:w-32 ${
           !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
-        } md:h-32 w-24 h-24  mx-auto mb-2`}
+        } md:h-32 w-24 h-24  mx-auto mb-2 object-cover `}
         src={
           userInfo?.photoURL ? userInfo.photoURL : constants.imgUrls.invalidUser
         }
@@ -100,7 +76,11 @@ const UserProfile = () => {
               <span className="flex items-center text-md">
                 <BiLink />
                 <a
-                  href={userInfo.link}
+                  href={
+                    userInfo.link && !userInfo.link.includes("http")
+                      ? `https://${userInfo.link}`
+                      : userInfo.link
+                  }
                   target="_blank"
                   rel="noreferrer"
                   className="text-cta-dark underline underline-offset-2"
@@ -135,7 +115,7 @@ const UserProfile = () => {
               }
               to={"./"}
             >
-              Posts
+              {`Posts (${userInfo.posts?.length})`}
             </NavLink>
             {isLoggedIn && profileId === uid && (
               <NavLink
@@ -148,7 +128,7 @@ const UserProfile = () => {
                 }
                 to={"./bookmarks"}
               >
-                Bookmarks
+                {`Bookmarks (${userInfo.bookmarks.length})`}
               </NavLink>
             )}
             {isLoggedIn && profileId === uid && (
@@ -162,7 +142,7 @@ const UserProfile = () => {
                 }
                 to={"./likes"}
               >
-                Likes
+                {`Likes (${userInfo.likedPosts.length})`}
               </NavLink>
             )}
           </section>

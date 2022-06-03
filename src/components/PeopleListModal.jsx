@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useOnClickOutside } from "../custom-hooks";
+import { getUserDetails } from "../services";
 import PersonCard from "./PersonCard";
 
 const PeopleListModal = React.forwardRef(
   ({ text, people, setShowModal }, ref) => {
     useOnClickOutside(ref, () => setShowModal(false));
+
+    const [peopleInfo, setPeopleInfo] = useState([]);
+
+    useEffect(() => {
+      (async () => {
+        const ans = [];
+        for await (const person of people) {
+          const userInfo = await getUserDetails(person);
+          ans.push(userInfo);
+        }
+        setPeopleInfo(ans);
+      })();
+    }, [people]);
+
     return (
       <div
         ref={ref}
@@ -14,17 +29,8 @@ const PeopleListModal = React.forwardRef(
           {text}
         </p>
         <section className=" max-h-[21rem] overflow-y-auto flex justify-start items-start gap-4 flex-col">
-          {people?.map((_, id) => (
-            <PersonCard
-              key={id}
-              user={{
-                displayName: "Sharath",
-                photoURL:
-                  "https://lh3.googleusercontent.com/a-/AOh14GgbjT5Falp276vt_d-EEBSWKgflhT__G-qKQQFc5vU=s96-c",
-                uid: "fhkjdsh",
-                username: "sharathnair9999",
-              }}
-            />
+          {peopleInfo?.map((person, id) => (
+            <PersonCard key={id} user={person} />
           ))}
         </section>
       </div>
