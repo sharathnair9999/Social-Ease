@@ -1,41 +1,21 @@
-import { doc, getDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { PostCard } from "../../components";
-import { db } from "../../firebase-config";
+import { fetchSinglePost } from "../../services";
 
 const SinglePost = () => {
   const { postId } = useParams();
-  const initialPostInfo = {
-    postId: "",
-    postDescription: "",
-    comments: [],
-    likes: [],
-    bookmarks: [],
-    uid: "",
-  };
-  const [singlePost, setSinglePost] = useState(initialPostInfo);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { singlePost, singlePostLoading } = useSelector((state) => state.posts);
 
   useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const postRef = doc(db, "posts", postId);
-        const postSnap = await getDoc(postRef);
-        setSinglePost({ postId: postSnap.id, ...postSnap.data() });
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        toast.error(error.message);
-      }
-    })();
-  }, [postId]);
+    dispatch(fetchSinglePost(postId));
+  }, [dispatch, postId]);
 
   return (
     <div className="mx-1">
-      {loading ? (
+      {singlePostLoading ? (
         "Loading " //will updat with an svg soon
       ) : (
         <div>
