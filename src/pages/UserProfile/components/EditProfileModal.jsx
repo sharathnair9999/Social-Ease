@@ -9,10 +9,9 @@ import {
   handleChange,
   uploadFile,
 } from "../../../helpers";
-import { userNameExists } from "../../Auth/helpers";
 import { AiFillDelete } from "react-icons/ai";
 import { FiUpload } from "react-icons/fi";
-import { updateUserProfile } from "../../../services";
+import { updateUserInfo, userNameExists } from "../../../services";
 import { useDispatch } from "react-redux";
 
 const EditProfileModal = ({ setShowModal, userInfo }) => {
@@ -25,6 +24,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
     setShowModal(false);
   };
   const [file, setFile] = useState("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUsername = useCallback(
     debounce(
       (currValue) =>
@@ -47,7 +47,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUserProfile(userDetails, dispatch);
+    dispatch(updateUserInfo(userDetails));
     setShowModal(false);
   };
 
