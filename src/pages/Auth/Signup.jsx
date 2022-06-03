@@ -8,7 +8,7 @@ import {
 } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
-import { signupUser, userNameExists } from "./helpers";
+import { signupUser, userNameExists } from "../../services";
 import { Brand } from "../../components";
 import { FiUpload } from "react-icons/fi";
 import { Button } from "../../components";

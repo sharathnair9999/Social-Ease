@@ -3,7 +3,7 @@ import { handleChange } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
 import { Brand } from "../../components";
-import { googleSignInHandler, loginUser } from "./helpers";
+import { googleSignInHandler, loginUser } from "../../services";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "../../components";
 
