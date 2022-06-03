@@ -190,6 +190,9 @@ const postSlice = createSlice({
           : [...state.singlePost.likes, uid];
       }
     );
+    builder.addCase(handleLike.rejected, (_, { payload }) => {
+      toast.error(payload);
+    });
   },
 });
 
