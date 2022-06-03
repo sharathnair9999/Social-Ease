@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { PostCard } from "../components";
-import { latestUserPostsQuery, universalSnapshot } from "../services";
+import { fetchUserPosts } from "../services";
 
 const UserPosts = () => {
   const { profileId } = useParams();
-  const [userPosts, setUserPosts] = useState([]);
+  const dispatch = useDispatch();
+  const { userPosts, userPostsLoading, userPostsError } = useSelector(
+    (state) => state.posts
+  );
   useEffect(() => {
-    const unsubscribe = universalSnapshot(
-      latestUserPostsQuery(profileId),
-      setUserPosts,
-      "postId"
-    );
-    return unsubscribe;
-  }, [profileId]);
+    dispatch(fetchUserPosts(profileId));
+  }, [profileId, dispatch]);
 
   return (
     <div className="w-full">
-      {userPosts.length === 0
-        ? "No Posts Here Yet"
-        : userPosts?.map((post) => (
+      {userPostsError && "Error"}
+      {userPostsLoading
+        ? " Loading" // will add loading gif and error gif after completing the app
+        : userPosts.length > 0
+        ? userPosts.map((post) => (
             <PostCard key={post.postId} postInfo={post} />
-          ))}
+          ))
+        : "No Posts Till Now"}
     </div>
   );
 };
