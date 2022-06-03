@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { MdOutlineFeed, MdExplore, MdPeopleAlt } from "react-icons/md";
-import { universalSnapShotDoc, userDocQuery } from "../../services";
+import { universalSnapShotDoc, userDocQuerybyId } from "../../services";
 
 const SideNav = () => {
   const { isLoggedIn, uid } = useSelector((state) => state.auth);
@@ -14,7 +14,7 @@ const SideNav = () => {
 
   useEffect(() => {
     const unsubscribe =
-      uid && universalSnapShotDoc(userDocQuery(uid), setUserInfo, "uid");
+      uid && universalSnapShotDoc(userDocQuerybyId(uid), setUserInfo, "uid");
 
     return uid ? unsubscribe : () => {};
   }, [uid]);
