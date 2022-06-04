@@ -3,9 +3,7 @@ import {
   addDoc,
   arrayRemove,
   arrayUnion,
-  collection,
   deleteDoc,
-  doc,
   getDoc,
   getDocs,
   onSnapshot,
@@ -13,12 +11,12 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { db } from "../firebase-config";
 import {
   explorePostsQuery,
   feedPostsQuery,
   latestUserPostsQuery,
   postByIdRef,
+  postsRef,
   userDocQuerybyId,
 } from "./firebaseQueries";
 
@@ -30,8 +28,9 @@ export const fetchFeedPosts = createAsyncThunk(
       let feedPosts = [];
       const feedPostsSnapShot = await getDocs(query);
       for await (const feedPost of feedPostsSnapShot.docs) {
-        const userRef = doc(db, "users", feedPost.data().uid);
-        const userSnapshot = await getDoc(userRef);
+        const userSnapshot = await getDoc(
+          userDocQuerybyId(feedPost.data().uid)
+        );
         feedPosts.push({
           postId: feedPost.id,
           displayName: userSnapshot.data().displayName,
@@ -72,46 +71,81 @@ export const fetchExplorePosts = createAsyncThunk(
   }
 );
 
-export const addNewPost = async (details) => {
-  try {
-    const postRef = await addDoc(collection(db, "posts"), {
-      ...details,
-      createdAt: serverTimestamp(),
-    });
-    // Add the post id into the posts array of user's profile details to show in the profile page of the user
-    const userRef = doc(db, "users", details.uid);
-    await updateDoc(userRef, {
-      posts: arrayUnion(postRef.id),
-    });
-  } catch (error) {
-    toast.error(error.message);
-  }
-};
+export const addNewPost = createAsyncThunk(
+  `posts/addNewPost`,
+  async (details, { rejectWithValue, getState }) => {
+    const {
+      auth: { uid, displayName, username, photoURL },
+    } = getState();
+    try {
+      const createdAt = serverTimestamp();
+      const postRef = await addDoc(postsRef, {
+        ...details,
+        uid,
+        createdAt,
+      });
+      // Add the post id into the posts array of user's profile details to show in the profile page of the user
 
-export const editPost = async (details) => {
-  try {
-    await updateDoc(postByIdRef(details.postId), {
-      ...details,
-    });
-    toast.success("Updated Post Successfully");
-  } catch (error) {
-    toast.error("Could not update the post");
+      await updateDoc(userDocQuerybyId(details.uid), {
+        posts: arrayUnion(postRef.id),
+      });
+      const post = {
+        postId: postRef.id,
+        uid,
+        createdAt,
+        ...details,
+        displayName,
+        username,
+        photoURL,
+      };
+      return post;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
-};
+);
 
-export const deletePost = async (postId, uid) => {
-  try {
-    await deleteDoc(postByIdRef(postId));
-    toast.success("Delete Post Successully");
-    // After deleting from the post from "posts" db, it should removed from the author's (user's) posts data
-    const userRef = doc(db, "users", uid);
-    await updateDoc(userRef, {
-      posts: arrayRemove(postId),
-    });
-  } catch (error) {
-    toast.error(error.message);
+export const editPost = createAsyncThunk(
+  `posts/editPost`,
+  async (details, { getState, rejectWithValue }) => {
+    try {
+      const {
+        auth: { uid, displayName, photoURL, username },
+      } = getState();
+      await updateDoc(postByIdRef(details.postId), {
+        ...details,
+      });
+      const edittedPost = {
+        ...details,
+        uid,
+        photoURL,
+        displayName,
+        username,
+      };
+      return edittedPost;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
-};
+);
+
+export const deletePost = createAsyncThunk(
+  `posts/deletePost`,
+  async (postId, { getState, rejectWithValue }) => {
+    const {
+      auth: { uid },
+    } = getState();
+    try {
+      await deleteDoc(postByIdRef(postId));
+      await updateDoc(userDocQuerybyId(uid), {
+        posts: arrayRemove(postId),
+      });
+      return postId;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const universalSnapshot = (query, setter, idFieldName) =>
   onSnapshot(
@@ -187,7 +221,6 @@ export const fetchSinglePost = createAsyncThunk(
         photoURL: userSnap.data().photoURL,
         username: userSnap.data().username,
       };
-
       return postInfo;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -200,11 +233,9 @@ export const fetchUserPosts = createAsyncThunk(
   async (profileId, { rejectWithValue }) => {
     try {
       let userPosts = [];
+      const userSnapshot = await getDoc(userDocQuerybyId(profileId));
       const userPostsSnapShot = await getDocs(latestUserPostsQuery(profileId));
       for await (const userPost of userPostsSnapShot.docs) {
-        const userSnapshot = await getDoc(
-          userDocQuerybyId(userPost.data().uid)
-        );
         userPosts.push({
           postId: userPost.id,
           displayName: userSnapshot.data().displayName,
