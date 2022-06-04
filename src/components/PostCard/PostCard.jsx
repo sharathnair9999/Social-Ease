@@ -12,12 +12,14 @@ import PostEditor from "../PostEditor";
 import PostActions from "../PostActions";
 import { AiFillLike } from "react-icons/ai";
 import PeopleListModal from "../PeopleListModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getReadableDate } from "../../helpers";
-import { useSelector } from "react-redux";
-import { deletePost } from "../../services";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePost, handleBookmark } from "../../services";
 import Comments from "./Comments";
-const PostCard = ({ postInfo, enableComments }) => {
+const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const {
     uid,
@@ -29,7 +31,10 @@ const PostCard = ({ postInfo, enableComments }) => {
     displayName,
     username,
     photoURL,
+    comments,
   } = postInfo;
+  const { bookmarkPosts } = useSelector((state) => state.posts);
+  const isBookmarked = bookmarkPosts.some((post) => post.postId === postId);
   const [showOptions, setShowOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openLikesModal, setOpenLikesModal] = useState(false);
@@ -42,7 +47,7 @@ const PostCard = ({ postInfo, enableComments }) => {
   const optionsRef = useRef();
 
   // Dummy data for now. Will change during comment feature
-  const comments = [
+  const dummyComments = [
     {
       commentId: "1",
       comment: "Comment 1",
@@ -59,6 +64,14 @@ const PostCard = ({ postInfo, enableComments }) => {
       uid: "yY2ABngg1rbHt16RTGFXBzwotZ82",
     },
   ];
+  const deleteHandler = () => {
+    dispatch(deletePost(postId));
+    singlePost && navigate(`/feed`);
+  };
+
+  const bookmarkHandler = () => {
+    dispatch(handleBookmark(postInfo));
+  };
 
   useOnClickOutside(optionsRef, () => setShowOptions(false));
   return (
@@ -107,44 +120,53 @@ const PostCard = ({ postInfo, enableComments }) => {
               )}
               {uid === authState.uid && (
                 <button
-                  onClick={() => deletePost(postInfo.postId, authState.uid)}
+                  onClick={deleteHandler}
                   className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
                 >
                   <AiFillDelete />
                   <span className="whitespace-nowrap">Delete</span>
                 </button>
               )}
-              <button className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full">
+              <button
+                onClick={bookmarkHandler}
+                className="flex justify-start items-center gap-1 text-cta-light px-2 py-1 rounded-md hover:bg-accent-2 w-full"
+              >
                 <BsFillBookmarkCheckFill />
-                <span className="whitespace-nowrap">Add to Bookmarks</span>
+                <span className="whitespace-nowrap">{`${
+                  isBookmarked ? "Remove From Bookmarks" : "Add to Bookmarks"
+                }`}</span>
               </button>
             </section>
           </section>
         )}
       </section>
 
-      {postInfo.postDescription?.length < 60 ? (
-        <Link to={`/post/${postInfo.postId}`}>
-          <p className="px-2 my-1">{postInfo.postDescription}</p>
-        </Link>
+      {postInfo.postDescription ? (
+        postInfo.postDescription?.length < 60 ? (
+          <Link to={`/post/${postInfo.postId}`}>
+            <p className="px-2 my-1">{postInfo.postDescription}</p>
+          </Link>
+        ) : (
+          <p className="px-2 my-1">
+            {showFullText ? (
+              <Link to={`/post/${postInfo.postId}`}>
+                <span>{postInfo.postDescription}</span>
+              </Link>
+            ) : (
+              <Link
+                to={`/post/${postInfo.postId}`}
+              >{`${postInfo.postDescription?.substring(0, 60)}... `}</Link>
+            )}{" "}
+            <button
+              className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
+              onClick={() => setShowFullText((state) => !state)}
+            >
+              {showFullText ? "Show less" : "Show more"}
+            </button>
+          </p>
+        )
       ) : (
-        <p className="px-2 my-1">
-          {showFullText ? (
-            <Link to={`/post/${postInfo.postId}`}>
-              <span>{postInfo.postDescription}</span>
-            </Link>
-          ) : (
-            <Link
-              to={`/post/${postInfo.postId}`}
-            >{`${postInfo.postDescription?.substring(0, 60)}... `}</Link>
-          )}{" "}
-          <button
-            className="text-sm font-light hover:bg-slate-50 hover:shadow-md p-[2px] rounded-sm"
-            onClick={() => setShowFullText((state) => !state)}
-          >
-            {showFullText ? "Show less" : "Show more"}
-          </button>
-        </p>
+        <p className="px-2 my-1">POST DOES NOT EXIST</p>
       )}
 
       {media?.length > 0 && (
@@ -176,7 +198,7 @@ const PostCard = ({ postInfo, enableComments }) => {
           likes={likes}
           setShowComments={setShowComments}
         />
-        <span className="text-sm">{`${comments.length} comments`}</span>
+        <span className="text-sm">{`${dummyComments.length} comments`}</span>
       </span>
       {showModal && (
         <Modal showModal={showModal}>
@@ -198,7 +220,7 @@ const PostCard = ({ postInfo, enableComments }) => {
           />
         </Modal>
       )}
-      {showComments && <Comments comments={comments} />}
+      {showComments && <Comments comments={dummyComments} />}
     </div>
   );
 };
