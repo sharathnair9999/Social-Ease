@@ -52,7 +52,6 @@ export const Comment = ({ newComment, existingCommentInfo }) => {
             type="text"
             placeholder="Write a Comment... "
             className="flex-grow  px-2 text-md min-h-[2.2rem] max-h-20 focus:outline-1 outline-cta-dark/20 "
-            autoFocus
             value={comment.comment}
             onChange={(e) =>
               setComment((state) => ({ ...state, comment: e.target.value }))

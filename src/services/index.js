@@ -28,6 +28,8 @@ import {
   fetchUserInfo,
   updateUserInfo,
   fetchUserLikedPosts,
+  handleBookmark,
+  fetchBookmarkedPosts,
 } from "./userServices";
 export {
   logout,
@@ -53,4 +55,6 @@ export {
   signupUser,
   googleSignInHandler,
   userNameExists,
+  handleBookmark,
+  fetchBookmarkedPosts,
 };

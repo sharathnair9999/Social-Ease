@@ -1,10 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {
+  addNewPost,
+  deletePost,
+  editPost,
+  fetchBookmarkedPosts,
   fetchExplorePosts,
   fetchFeedPosts,
-  fetchSinglePost,
   fetchUserPosts,
+  handleBookmark,
   handleLike,
 } from "../../services";
 
@@ -19,37 +23,45 @@ const initialState = {
   explorePostsLoading: false,
   explorePostsError: "",
 
-  // Bookmark posts State
-  bookmarkPosts: [],
-  bookmarkPostsLoading: false,
-  bookmarkPostsError: "",
-
   // User posts state
   userPosts: [],
   userPostsLoading: false,
   userPostsError: "",
 
-  // Single Post State
-  singlePost: {
-    postId: "",
-    uid: "",
-    postDescription: "",
-    likes: [],
-    comments: [],
-    createdAt: null,
-    media: [],
-    photoURL: "",
-    displayName: "",
-    username: "",
-  },
-  singlePostLoading: false,
-  singlePostError: null,
+  // Bookmark posts state
+  bookmarkPosts: [],
+  bookmarkPostsLoading: false,
+  bookmarkPostsError: "",
 };
 
 const postSlice = createSlice({
   name: "posts",
   initialState,
   extraReducers: (builder) => {
+    // add new post
+    builder.addCase(addNewPost.fulfilled, (state, { payload }) => {
+      state.feedPosts.unshift(payload);
+      state.explorePosts.unshift(payload);
+      state.feedPosts.unshift(payload);
+      state.userPosts.unshift(payload);
+    });
+    builder.addCase(addNewPost.rejected, (_, { payload }) => {
+      toast.error(payload);
+    });
+
+    // edit post handler
+    builder.addCase(editPost.fulfilled, (state, { payload }) => {
+      state.feedPosts = state.feedPosts.map((post) =>
+        post.postId === payload.postId ? payload : post
+      );
+      state.explorePosts = state.explorePosts.map((post) =>
+        post.postId === payload.postId ? payload : post
+      );
+    });
+    builder.addCase(editPost.rejected, (_, { payload }) => {
+      toast.error(payload);
+    });
+
     // Fetching feed posts
     builder.addCase(fetchFeedPosts.pending, (state) => {
       state.feedPostsLoading = true;
@@ -59,7 +71,7 @@ const postSlice = createSlice({
       state.feedPostsLoading = false;
     });
     builder.addCase(fetchFeedPosts.rejected, (state, { payload }) => {
-      state.feedPostsError = payload;
+      toast.error(payload);
       state.feedPostsLoading = false;
     });
     // Fetching explore posts
@@ -87,75 +99,24 @@ const postSlice = createSlice({
       state.userPostsError = payload;
     });
 
-    // Fetching Single post
-    builder.addCase(fetchSinglePost.pending, ({ singlePostLoading }) => {
-      singlePostLoading = true;
+    // Delete a post
+    builder.addCase(deletePost.fulfilled, (state, { payload }) => {
+      state.explorePosts = state.explorePosts.filter(
+        (post) => post.postId !== payload
+      );
+      state.feedPosts = state.feedPosts.filter(
+        (post) => post.postId !== payload
+      );
+      state.userPosts = state.userPosts.filter(
+        (post) => post.postId !== payload
+      );
     });
-    builder.addCase(
-      fetchSinglePost.fulfilled,
-      (
-        { singlePost, singlePostError, singlePostLoading },
-        {
-          payload: {
-            uid,
-            postId,
-            postDescription,
-            comments,
-            likes,
-            media,
-            createdAt,
-            displayName,
-            photoURL,
-            username,
-          },
-        }
-      ) => {
-        singlePostError = "";
-        singlePost.uid = uid;
-        singlePost.comments = comments;
-        singlePost.createdAt = createdAt;
-        singlePost.postId = postId;
-        singlePost.postDescription = postDescription;
-        singlePost.likes = likes;
-        singlePost.displayName = displayName;
-        singlePost.photoURL = photoURL;
-        singlePost.username = username;
-        singlePost.media = media;
-        singlePostLoading = false;
-      }
-    );
-    builder.addCase(
-      fetchSinglePost.rejected,
-      ({ singlePostLoading, singlePostError, singlePost }, { payload }) => {
-        singlePostLoading = false;
-        singlePostError = payload;
-        toast.error(singlePostError);
-        singlePost.uid = "";
-        singlePost.comments = [];
-        singlePost.createdAt = "";
-        singlePost.postId = "";
-        singlePost.postDescription = "";
-        singlePost.likes = [];
-        singlePost.displayName = "";
-        singlePost.photoURL = "";
-        singlePost.username = "";
-        singlePost.media = [];
-      }
-    );
+
+    // Handle like of post
     builder.addCase(
       handleLike.fulfilled,
       (state, { payload: { isLiked, postId, uid } }) => {
         state.feedPosts = state.feedPosts.map((post) =>
-          post.postId === postId
-            ? {
-                ...post,
-                likes: isLiked
-                  ? post.likes.filter((user) => user !== uid)
-                  : [...post.likes, uid],
-              }
-            : post
-        );
-        state.bookmarkPosts = state.bookmarkPosts.map((post) =>
           post.postId === postId
             ? {
                 ...post,
@@ -185,14 +146,36 @@ const postSlice = createSlice({
               }
             : post
         );
-        state.singlePost.likes = isLiked
-          ? state.singlePost.likes.filter((user) => user !== uid)
-          : [...state.singlePost.likes, uid];
       }
     );
     builder.addCase(handleLike.rejected, (_, { payload }) => {
       toast.error(payload);
     });
+
+    // get all posts the current logged in user has bookmarked
+    builder.addCase(fetchBookmarkedPosts.pending, (state) => {
+      state.bookmarkPostsLoading = true;
+    });
+    builder.addCase(fetchBookmarkedPosts.fulfilled, (state, { payload }) => {
+      state.bookmarkPostsLoading = false;
+      state.bookmarkPosts = payload;
+    });
+    builder.addCase(fetchBookmarkedPosts.rejected, (state, { payload }) => {
+      state.bookmarkPostsLoading = false;
+      state.bookmarkPostsError = payload;
+    });
+
+    // Handle Bookmarks
+    builder.addCase(
+      handleBookmark.fulfilled,
+      (state, { payload: { isBookmarked, postInfo } }) => {
+        state.bookmarkPosts = isBookmarked
+          ? state.bookmarkPosts.filter(
+              (post) => post.postId !== postInfo.postId
+            )
+          : [...state.bookmarkPosts, { ...postInfo }];
+      }
+    );
   },
 });
 

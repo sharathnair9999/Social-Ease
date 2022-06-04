@@ -7,7 +7,7 @@ import { storage } from "../firebase-config";
 import { AiFillDelete } from "react-icons/ai";
 import { addNewPost, editPost } from "../services";
 import Button from "./Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmojiPicker from "./EmojiPicker";
 
 const PostEditor = React.forwardRef(
@@ -18,8 +18,9 @@ const PostEditor = React.forwardRef(
       media: [],
       likes: [],
       comments: [],
-      uid: uid,
+      uid,
     };
+    const dispatch = useDispatch();
     const [isValidDetails, setisValidDetails] = useState(true);
     const [images, setImages] = useState([]);
     const postState = newPost ? newPostState : existingPostInfo;
@@ -27,7 +28,7 @@ const PostEditor = React.forwardRef(
     const [showEmojis, setShowEmojis] = useState(false);
     const emojisRef = useRef();
     useOnClickOutside(emojisRef, () => setShowEmojis(false));
-    const cancelPostAction = () => {
+    const cancelPostAction = async () => {
       if (
         postDetails.postDescription.length > 0 ||
         postDetails.media.length > 0
@@ -37,7 +38,7 @@ const PostEditor = React.forwardRef(
         );
         if (confirm) {
           if (newPost && postDetails.media.length > 0) {
-            deleteFile(
+            await deleteFile(
               firestoreRef(storage, postDetails.media[0]),
               setPostDetails,
               "media"
@@ -53,16 +54,20 @@ const PostEditor = React.forwardRef(
     };
     const handlePost = async (e) => {
       e.preventDefault();
-      newPost ? await addNewPost(postDetails) : await editPost(postDetails);
+      newPost
+        ? dispatch(addNewPost(postDetails))
+        : dispatch(editPost(postDetails));
       setPostDetails(newPostState);
       setImages([]);
       setShowModal(false);
     };
 
     useEffect(() => {
-      images.forEach(async (image) =>
-        uploadFile(image, setisValidDetails, setPostDetails, true, "media")
-      );
+      (async () => {
+        for await (const image of images) {
+          uploadFile(image, setisValidDetails, setPostDetails, false, "media");
+        }
+      })();
     }, [images]);
 
     return (

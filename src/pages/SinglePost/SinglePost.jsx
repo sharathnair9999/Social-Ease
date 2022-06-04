@@ -7,7 +7,7 @@ import { fetchSinglePost } from "../../services";
 const SinglePost = () => {
   const { postId } = useParams();
   const dispatch = useDispatch();
-  const { singlePost, singlePostLoading } = useSelector((state) => state.posts);
+  const { singlePost, singlePostLoading } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchSinglePost(postId));
@@ -19,7 +19,7 @@ const SinglePost = () => {
         "Loading " //will updat with an svg soon
       ) : (
         <div>
-          <PostCard postInfo={singlePost} enableComments />
+          <PostCard postInfo={singlePost} singlePost enableComments />
         </div>
       )}
     </div>
