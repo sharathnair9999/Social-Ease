@@ -19,6 +19,7 @@ const UserProfile = () => {
   const peopleModalRef = useRef();
 
   const userInfo = useSelector((state) => state.user);
+  const postsInfo = useSelector((state) => state.posts);
 
   useEffect(() => {
     dispatch(fetchUserInfo(profileId));
@@ -37,9 +38,11 @@ const UserProfile = () => {
 
   return (
     <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
-      <Modal showModal={showModal}>
-        <EditProfileModal userInfo={userInfo} setShowModal={setShowModal} />
-      </Modal>
+      {userInfo.uid === profileId && (
+        <Modal showModal={showModal}>
+          <EditProfileModal userInfo={userInfo} setShowModal={setShowModal} />
+        </Modal>
+      )}
       <img
         className={`md:w-32 ${
           !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
@@ -70,7 +73,7 @@ const UserProfile = () => {
       </p>
       {userInfo.displayName && (
         <div className="w-full">
-          <section className="flex justify-start items-center gap-4">
+          <section className="flex justify-start items-center gap-y-1  gap-x-4 flex-wrap ">
             <span className="text-md ">{`@${userInfo.username}`}</span>
             {userInfo.link && (
               <span className="flex items-center text-md">
@@ -90,8 +93,8 @@ const UserProfile = () => {
               </span>
             )}
           </section>
-          {userInfo.bio && <p>{userInfo.bio}</p>}
-          <p className="text-sm">{`Joined on ${getMonthYear(
+          {userInfo.bio && <p className="py-1">{userInfo.bio}</p>}
+          <p className="text-sm py-1">{`Joined on ${getMonthYear(
             userInfo.joinedAt.seconds
           )}`}</p>
           <p className="flex justify-start items-center gap-10 my-1">
@@ -128,7 +131,7 @@ const UserProfile = () => {
                 }
                 to={"./bookmarks"}
               >
-                {`Bookmarks (${userInfo.bookmarks.length})`}
+                {`Bookmarks (${postsInfo.bookmarkPosts.length})`}
               </NavLink>
             )}
             {isLoggedIn && profileId === uid && (

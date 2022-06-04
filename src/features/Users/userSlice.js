@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserInfo, handleLike, updateUserInfo } from "../../services";
-import { fetchUserLikedPosts } from "../../services/userServices";
+import { toast } from "react-toastify";
+import {
+  fetchUserInfo,
+  handleLike,
+  updateUserInfo,
+  fetchUserLikedPosts,
+  fetchSinglePost,
+  editPost,
+} from "../../services";
 
 const initialState = {
   uid: "",
@@ -21,6 +28,22 @@ const initialState = {
   likedPosts: [],
   likedPostsLoading: false,
   likedPostsError: "",
+
+  // Single Post State
+  singlePost: {
+    postId: "",
+    uid: "",
+    postDescription: "",
+    likes: [],
+    comments: [],
+    createdAt: null,
+    media: [],
+    photoURL: "",
+    displayName: "",
+    username: "",
+  },
+  singlePostLoading: false,
+  singlePostError: null,
 };
 
 const userSlice = createSlice({
@@ -81,15 +104,98 @@ const userSlice = createSlice({
       state.likedPostsError = payload;
     });
 
+    // Fetching Single post
+    builder.addCase(fetchSinglePost.pending, ({ singlePostLoading }) => {
+      singlePostLoading = true;
+    });
+    builder.addCase(
+      fetchSinglePost.fulfilled,
+      (
+        { singlePost, singlePostError, singlePostLoading },
+        {
+          payload: {
+            uid,
+            postId,
+            postDescription,
+            comments,
+            likes,
+            media,
+            createdAt,
+            displayName,
+            photoURL,
+            username,
+          },
+        }
+      ) => {
+        singlePostError = "";
+        singlePost.uid = uid;
+        singlePost.comments = comments;
+        singlePost.createdAt = createdAt;
+        singlePost.postId = postId;
+        singlePost.postDescription = postDescription;
+        singlePost.likes = likes;
+        singlePost.displayName = displayName;
+        singlePost.photoURL = photoURL;
+        singlePost.username = username;
+        singlePost.media = media;
+        singlePostLoading = false;
+      }
+    );
+    builder.addCase(
+      fetchSinglePost.rejected,
+      ({ singlePostLoading, singlePostError, singlePost }, { payload }) => {
+        singlePostLoading = false;
+        singlePostError = payload;
+        toast.error(singlePostError);
+        singlePost.uid = "";
+        singlePost.comments = [];
+        singlePost.createdAt = "";
+        singlePost.postId = "";
+        singlePost.postDescription = "";
+        singlePost.likes = [];
+        singlePost.displayName = "";
+        singlePost.photoURL = "";
+        singlePost.username = "";
+        singlePost.media = [];
+      }
+    );
+
+    // handling edit post from single post page
+    builder.addCase(
+      editPost.fulfilled,
+      (state, { payload: { media, postDescription } }) => {
+        state.singlePost.postDescription = postDescription;
+        state.singlePost.media = media;
+      }
+    );
+
     // Removes the post from liked posts when unliked from there otherwise stays as it is
     builder.addCase(
       handleLike.fulfilled,
-      (state, { payload: { isLiked, postId } }) => {
+      (state, { payload: { isLiked, postId, uid } }) => {
         state.likedPosts = isLiked
           ? state.likedPosts.filter((post) => post.postId !== postId)
           : state.likedPosts;
+
+        state.bookmarks = state.bookmarks.map((post) =>
+          post.postId === postId
+            ? {
+                ...post,
+                likes: isLiked
+                  ? post.likes.filter((user) => user !== uid)
+                  : [...post.likes, uid],
+              }
+            : post
+        );
+        state.singlePost.likes = isLiked
+          ? state.singlePost.likes.filter((user) => user !== uid)
+          : [...state.singlePost.likes, uid];
       }
     );
+
+    builder.addCase(handleLike.rejected, (_, { payload }) => {
+      toast.error(payload);
+    });
   },
 });
 
