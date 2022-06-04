@@ -53,7 +53,7 @@ const SideNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 z-[1] right-0 h-14  md:h-[calc(100vh)] md:max-w-[10rem] md:top-20 md:pt-1 md:left-3 bg-cta-light md:bg-transparent  ">
+    <div className="fixed bottom-0 left-0 z-[1] right-0 md:h-[calc(100vh)] md:max-w-[10rem] md:top-20 md:pt-1 md:left-3 bg-cta-light md:bg-transparent  ">
       <ul className="flex justify-between items-center md:justify-start  md:items-start md:flex-col md:gap-4  ">
         {links.map(({ url, display, icon, protectedLink }, id) => (
           <li key={id} className="lg:w-[10rem]">
