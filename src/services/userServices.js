@@ -1,8 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { updateProfile } from "firebase/auth";
-import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { toast } from "react-toastify";
 import { auth, db } from "../firebase-config";
-import { userDocQuerybyId, userLikedPostsQuery } from "./firebaseQueries";
+import {
+  userDocQuerybyId,
+  userLikedPostsQuery,
+  postByIdRef,
+} from "./firebaseQueries";
 
 export const getUserInfo = async (id, setter) => {
   const docRef = doc(db, "users", id);
@@ -27,8 +39,7 @@ export const fetchUserInfo = createAsyncThunk(
       auth: { uid },
     } = getState();
     try {
-      const userRef = doc(db, "users", profileId);
-      const userSnap = await getDoc(userRef);
+      const userSnap = await getDoc(userDocQuerybyId(profileId));
       if (!userSnap.exists()) {
         return rejectWithValue({ validUser: false });
       }
@@ -116,6 +127,78 @@ export const fetchUserLikedPosts = createAsyncThunk(
         });
       }
       return userLikedPosts;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+// Add post to bookmarks
+
+export const isPostBookmarked = async (postId, uid) => {
+  const userSnap = await getDoc(userDocQuerybyId(uid));
+  if (userSnap.exists()) {
+    const myBookmarks = userSnap.data().bookmarks;
+    const flag = myBookmarks.some((post) => post === postId);
+
+    return flag;
+  } else {
+    toast.error("No Such Document Found");
+    return null;
+  }
+};
+
+export const handleBookmark = createAsyncThunk(
+  "posts/handleBookmark",
+  async (postInfo, { rejectWithValue, getState }) => {
+    try {
+      const {
+        auth: { uid },
+      } = getState();
+      const isBookmarked = await isPostBookmarked(postInfo.postId, uid);
+      await updateDoc(userDocQuerybyId(uid), {
+        bookmarks: isBookmarked
+          ? arrayRemove(postInfo.postId)
+          : arrayUnion(postInfo.postId),
+      });
+      return { isBookmarked, postInfo, uid };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// fetch all bookmarked Posts of a user
+
+export const fetchBookmarkedPosts = createAsyncThunk(
+  `user/fetchUserBookmarkedPosts`,
+  async (profileId, { rejectWithValue }) => {
+    try {
+      let bookmarkPosts = [];
+      const userSnapshot = await getDoc(userDocQuerybyId(profileId));
+      const bookmarkIds = userSnapshot.data().bookmarks;
+      for await (const postId of bookmarkIds) {
+        const bookmarkPostSnapshot = await getDoc(postByIdRef(postId));
+        if (bookmarkPostSnapshot.exists()) {
+          bookmarkPosts.push({
+            postId: bookmarkPostSnapshot.id,
+            displayName: userSnapshot.data().displayName,
+            photoURL: userSnapshot.data().photoURL,
+            username: userSnapshot.data().username,
+            ...bookmarkPostSnapshot.data(),
+            postAvailable: true,
+          });
+        } else {
+          bookmarkPosts.push({
+            postId: bookmarkPostSnapshot.id,
+            displayName: userSnapshot.data().displayName,
+            photoURL: userSnapshot.data().photoURL,
+            username: userSnapshot.data().username,
+            ...bookmarkPostSnapshot.data(),
+            postAvailable: false,
+          });
+        }
+      }
+      return bookmarkPosts;
     } catch (error) {
       return rejectWithValue(error.message);
     }

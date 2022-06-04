@@ -64,7 +64,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
 
   return (
     <form
-      className="md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-3/4 rounded-md shadow-xl flex justify-center items-center flex-col gap-2 z-20"
+      className="md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-[30rem] md:h-3/4 rounded-md shadow-xl flex justify-center items-center flex-col gap-2 z-20"
       onSubmit={handleSubmit}
     >
       <section className="relative">
