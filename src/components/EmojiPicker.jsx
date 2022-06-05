@@ -1,5 +1,6 @@
 import React from "react";
 import Picker from "emoji-picker-react";
+import { AiFillCloseCircle } from "react-icons/ai";
 
 const EmojiPicker = React.forwardRef(
   ({ setShowEmojis, setDetails, fieldName }, ref) => {
@@ -10,18 +11,15 @@ const EmojiPicker = React.forwardRef(
       }));
     };
     return (
-      <div
-        ref={ref}
-        className=" flex justify-start items-start flex-col absolute bottom-[-5rem] left-full md:left-[10rem] "
-      >
+      <div ref={ref} className="relative ">
+        <Picker disableAutoFocus={true} onEmojiClick={onEmojiClick} />
         <button
+          className="flex justify-center items-center w-4 h-4 rounded-full bg-cta-dark text-cta-light absolute -top-1 -right-1"
           type="button"
-          className="ml-auto"
           onClick={() => setShowEmojis(false)}
         >
-          x
+          <AiFillCloseCircle />
         </button>
-        <Picker disableAutoFocus={true} onEmojiClick={onEmojiClick} />
       </div>
     );
   }

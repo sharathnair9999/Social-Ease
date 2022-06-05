@@ -7,23 +7,30 @@ import { storage } from "../firebase-config";
 import { AiFillDelete } from "react-icons/ai";
 import { addNewPost, editPost } from "../services";
 import Button from "./Button";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import EmojiPicker from "./EmojiPicker";
 
 const PostEditor = React.forwardRef(
   ({ newPost, existingPostInfo, setShowModal }, ref) => {
-    const { uid } = useSelector((state) => state.auth);
     const newPostState = {
       postDescription: "",
       media: [],
       likes: [],
       comments: [],
-      uid,
     };
     const dispatch = useDispatch();
     const [isValidDetails, setisValidDetails] = useState(true);
     const [images, setImages] = useState([]);
-    const postState = newPost ? newPostState : existingPostInfo;
+    const postState = newPost
+      ? newPostState
+      : {
+          postDescription: existingPostInfo.postDescription,
+          media: existingPostInfo.media,
+          likes: existingPostInfo.likes,
+          comments: existingPostInfo.comments,
+          uid: existingPostInfo.uid,
+          createdAt: existingPostInfo.createdAt,
+        };
     const [postDetails, setPostDetails] = useState(postState);
     const [showEmojis, setShowEmojis] = useState(false);
     const emojisRef = useRef();
@@ -56,7 +63,7 @@ const PostEditor = React.forwardRef(
       e.preventDefault();
       newPost
         ? dispatch(addNewPost(postDetails))
-        : dispatch(editPost(postDetails));
+        : dispatch(editPost({ postDetails, postId: existingPostInfo.postId }));
       setPostDetails(newPostState);
       setImages([]);
       setShowModal(false);
@@ -72,7 +79,7 @@ const PostEditor = React.forwardRef(
 
     return (
       <form
-        className={`md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
+        className={`relative md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
         onSubmit={handlePost}
       >
         <textarea
@@ -130,14 +137,16 @@ const PostEditor = React.forwardRef(
           >
             😀
           </button>
-          {showEmojis && (
-            <EmojiPicker
-              ref={emojisRef}
-              setShowEmojis={setShowEmojis}
-              setDetails={setPostDetails}
-              fieldName="postDescription"
-            />
-          )}
+          <section className="absolute md:bottom-0 -bottom-10 md:right-32 right-16 z-10">
+            {showEmojis && (
+              <EmojiPicker
+                ref={emojisRef}
+                setShowEmojis={setShowEmojis}
+                setDetails={setPostDetails}
+                fieldName="postDescription"
+              />
+            )}
+          </section>
           <section className="ml-auto flex justify-center items-center gap-2">
             <Button
               type="submit"

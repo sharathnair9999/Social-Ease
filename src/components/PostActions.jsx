@@ -23,6 +23,11 @@ const PostActions = ({ postId, setShowComments, likes }) => {
     }
   };
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/post/${postId}`);
+    toast.success("Copied URL to Clipboard");
+  };
+
   return (
     <div className="inline-flex rounded-md shadow-sm" role="group">
       <button
@@ -47,6 +52,7 @@ const PostActions = ({ postId, setShowComments, likes }) => {
       </button>
       <button
         type="button"
+        onClick={handleShare}
         className="inline-flex gap-2 items-center md:py-2 md:px-4 px-2 py-1 text-xs md:text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-cta-dark    dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white"
       >
         <RiShareForwardLine />

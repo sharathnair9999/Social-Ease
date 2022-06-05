@@ -136,7 +136,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
       />
       <Input
         label={"Portfolio/Github"}
-        type={"text"}
+        type={"url"}
         name="link"
         value={userDetails.link}
         onChange={(e) => handleChange(e, setUserDetails)}

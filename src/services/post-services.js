@@ -19,6 +19,7 @@ import {
   postsRef,
   userDocQuerybyId,
 } from "./firebaseQueries";
+import { v4 as uuid } from "uuid";
 
 export const fetchFeedPosts = createAsyncThunk(
   "posts/fetchFeedPosts",
@@ -86,7 +87,7 @@ export const addNewPost = createAsyncThunk(
       });
       // Add the post id into the posts array of user's profile details to show in the profile page of the user
 
-      await updateDoc(userDocQuerybyId(details.uid), {
+      await updateDoc(userDocQuerybyId(uid), {
         posts: arrayUnion(postRef.id),
       });
       const post = {
@@ -107,16 +108,17 @@ export const addNewPost = createAsyncThunk(
 
 export const editPost = createAsyncThunk(
   `posts/editPost`,
-  async (details, { getState, rejectWithValue }) => {
+  async ({ postDetails, postId }, { getState, rejectWithValue }) => {
     try {
       const {
         auth: { uid, displayName, photoURL, username },
       } = getState();
-      await updateDoc(postByIdRef(details.postId), {
-        ...details,
+      await updateDoc(postByIdRef(postId), {
+        ...postDetails,
       });
       const edittedPost = {
-        ...details,
+        ...postDetails,
+        postId,
         uid,
         photoURL,
         displayName,
@@ -245,6 +247,67 @@ export const fetchUserPosts = createAsyncThunk(
         });
       }
       return userPosts;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// add comment to a post
+
+export const addComment = createAsyncThunk(
+  `posts/addComment`,
+  async ({ postId, comment, comments }, { rejectWithValue, getState }) => {
+    const {
+      auth: { uid },
+    } = getState();
+    try {
+      let newComment = {
+        uid,
+        commentId: uuid(),
+        ...comment,
+      };
+      let newComments = [...comments, { ...newComment }];
+      await updateDoc(postByIdRef(postId), {
+        comments: newComments,
+      });
+      return { postId, newComments };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+// Edit an existing comment
+
+export const editComment = createAsyncThunk(
+  `posts/editComment`,
+  async ({ postId, updatedComment, comments }, { rejectWithValue }) => {
+    try {
+      let newComments = comments.map((prevComment) =>
+        prevComment.commentId === updatedComment.commentId
+          ? { ...prevComment, commentText: updatedComment.commentText }
+          : prevComment
+      );
+      await updateDoc(postByIdRef(postId), {
+        comments: newComments,
+      });
+      return { postId, newComments };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// delete a comment from a post
+
+export const deleteComment = createAsyncThunk(
+  `posts/deleteComment`,
+  async ({ postId, comments }, { rejectWithValue }) => {
+    try {
+      await updateDoc(postByIdRef(postId), {
+        comments: comments,
+      });
+      return { postId, newComments: comments };
     } catch (error) {
       return rejectWithValue(error.message);
     }
