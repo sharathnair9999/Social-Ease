@@ -7,6 +7,9 @@ import {
   fetchUserLikedPosts,
   fetchSinglePost,
   editPost,
+  addComment,
+  deleteComment,
+  editComment,
 } from "../../services";
 
 const initialState = {
@@ -85,6 +88,7 @@ const userSlice = createSlice({
       state.displayName = payload.displayName;
       state.photoURL = payload.photoURL;
       state.username = payload.username;
+      toast.success("Updated Details Successfully");
     });
     builder.addCase(updateUserInfo.rejected, (state, { payload }) => {
       state.userLoading = false;
@@ -195,6 +199,21 @@ const userSlice = createSlice({
 
     builder.addCase(handleLike.rejected, (_, { payload }) => {
       toast.error(payload);
+    });
+
+    // adding comment from single post page
+
+    builder.addCase(addComment.fulfilled, (state, { payload }) => {
+      state.singlePost = { ...state.singlePost, comments: payload.newComments };
+    });
+
+    // delete comment from single post page
+    builder.addCase(deleteComment.fulfilled, (state, { payload }) => {
+      state.singlePost = { ...state.singlePost, comments: payload.newComments };
+    });
+    // update comment from single post page
+    builder.addCase(editComment.fulfilled, (state, { payload }) => {
+      state.singlePost = { ...state.singlePost, comments: payload.newComments };
     });
   },
 });

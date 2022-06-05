@@ -22,6 +22,9 @@ import {
   fetchFeedPosts,
   fetchExplorePosts,
   fetchUserPosts,
+  deleteComment,
+  addComment,
+  editComment,
 } from "./post-services";
 import {
   getUserDetails,
@@ -57,4 +60,7 @@ export {
   userNameExists,
   handleBookmark,
   fetchBookmarkedPosts,
+  deleteComment,
+  addComment,
+  editComment,
 };

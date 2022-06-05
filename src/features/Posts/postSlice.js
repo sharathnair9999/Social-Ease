@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {
+  addComment,
   addNewPost,
+  deleteComment,
   deletePost,
+  editComment,
   editPost,
   fetchBookmarkedPosts,
   fetchExplorePosts,
@@ -42,7 +45,6 @@ const postSlice = createSlice({
     builder.addCase(addNewPost.fulfilled, (state, { payload }) => {
       state.feedPosts.unshift(payload);
       state.explorePosts.unshift(payload);
-      state.feedPosts.unshift(payload);
       state.userPosts.unshift(payload);
     });
     builder.addCase(addNewPost.rejected, (_, { payload }) => {
@@ -176,6 +178,81 @@ const postSlice = createSlice({
           : [...state.bookmarkPosts, { ...postInfo }];
       }
     );
+
+    // Add comment to a post
+    builder.addCase(addComment.fulfilled, (state, { payload }) => {
+      state.explorePosts = state.explorePosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.feedPosts = state.feedPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.bookmarkPosts = state.bookmarkPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.userPosts = state.userPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+    });
+
+    // Edit Comment in a post
+    builder.addCase(editComment.fulfilled, (state, { payload }) => {
+      state.explorePosts = state.explorePosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.feedPosts = state.feedPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.bookmarkPosts = state.bookmarkPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.userPosts = state.userPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+    });
+
+    // delete a comment from post
+    builder.addCase(deleteComment.fulfilled, (state, { payload }) => {
+      state.feedPosts = state.feedPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.explorePosts = state.explorePosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.bookmarkPosts = state.bookmarkPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+      state.userPosts = state.userPosts.map((post) =>
+        post.postId === payload.postId
+          ? { ...post, comments: payload.newComments }
+          : post
+      );
+    });
+    builder.addCase(deleteComment.rejected, (_, { payload }) => {
+      toast.error(payload);
+    });
   },
 });
 
