@@ -46,24 +46,6 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
   const editModalRef = useRef();
   const optionsRef = useRef();
 
-  // Dummy data for now. Will change during comment feature
-  const dummyComments = [
-    {
-      commentId: "1",
-      comment: "Comment 1",
-      uid: "MHM8FdD5ROdOf285bhDHXfr6LPn2",
-    },
-    {
-      commentId: "2",
-      comment: "Comment 2",
-      uid: "H0maPlsU7WVO9tMJGEYfaYKPyDf2",
-    },
-    {
-      commentId: "3",
-      comment: "Comment 3",
-      uid: "yY2ABngg1rbHt16RTGFXBzwotZ82",
-    },
-  ];
   const deleteHandler = () => {
     dispatch(deletePost(postId));
     singlePost && navigate(`/feed`);
@@ -198,7 +180,7 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           likes={likes}
           setShowComments={setShowComments}
         />
-        <span className="text-sm">{`${dummyComments.length} comments`}</span>
+        <span className="text-sm">{`${comments?.length} comments`}</span>
       </span>
       {showModal && (
         <Modal showModal={showModal}>
@@ -220,7 +202,9 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           />
         </Modal>
       )}
-      {showComments && <Comments comments={dummyComments} />}
+      {showComments && (
+        <Comments comments={comments} postId={postId} postAuthor={uid} />
+      )}
     </div>
   );
 };
