@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUserInfo } from "../../services/userServices";
 import EmojiPicker from "../EmojiPicker";
 import { ImCancelCircle } from "react-icons/im";
 import { AiFillEdit, AiOutlineSend, AiFillDelete } from "react-icons/ai";
 import { addComment, deleteComment, editComment } from "../../services";
+import { toast } from "react-toastify";
 
 export const Comment = ({
   newComment,
@@ -15,7 +16,10 @@ export const Comment = ({
   postAuthor,
 }) => {
   const dispatch = useDispatch();
-  const { uid, photoURL, displayName } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { uid, photoURL, displayName, isLoggedIn } = useSelector(
+    (state) => state.auth
+  );
   const newCommentState = {
     commentText: "",
     likes: [],
@@ -32,6 +36,10 @@ export const Comment = ({
   const [isEditing, setIsEditing] = useState(false);
   const submitComment = (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      toast.error("Please login to continue");
+      navigate("/login");
+    }
     if (newComment) {
       dispatch(addComment({ postId, comment, comments }));
       setComment(newCommentState);
