@@ -152,11 +152,14 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
       )}
 
       {media?.length > 0 && (
-        <Link to={`/post/${postInfo.postId}`}>
+        <Link
+          to={`/post/${postInfo.postId}`}
+          className={`flex justify-center items-center `}
+        >
           <img
             src={media[0]}
             alt={postDescription}
-            className="w-full py-2 h-auto"
+            className="w-auto py-2 max-h-96 "
           />
         </Link>
       )}

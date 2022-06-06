@@ -79,11 +79,7 @@ const UserProfile = () => {
               <span className="flex items-center text-md">
                 <BiLink />
                 <a
-                  href={
-                    userInfo.link && !userInfo.link.includes("http")
-                      ? `https://${userInfo.link}`
-                      : userInfo.link
-                  }
+                  href={userInfo.link}
                   target="_blank"
                   rel="noreferrer"
                   className="text-cta-dark underline underline-offset-2"
