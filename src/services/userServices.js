@@ -3,10 +3,13 @@ import { updateProfile } from "firebase/auth";
 import {
   arrayRemove,
   arrayUnion,
+  collection,
   doc,
   getDoc,
   getDocs,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { auth, db } from "../firebase-config";
@@ -14,6 +17,7 @@ import {
   userDocQuerybyId,
   userLikedPostsQuery,
   postByIdRef,
+  queryUserCollection,
 } from "./firebaseQueries";
 
 export const getUserInfo = async (id, setter) => {
@@ -30,6 +34,25 @@ export const getUserDetails = async (id) => {
   return data;
 };
 
+export const fetchSuggestions = createAsyncThunk(
+  `user/fetchSuggestions`,
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const {
+        auth: { uid },
+      } = getState();
+      const usersSnap = await getDocs(queryUserCollection);
+      const allUsers = [];
+      usersSnap.forEach((userSnap) => {
+        allUsers.push({ uid: userSnap.id, ...userSnap.data() });
+      });
+      return { allUsers, uid };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Fetching the user profile information
 
 export const fetchUserInfo = createAsyncThunk(
@@ -45,11 +68,11 @@ export const fetchUserInfo = createAsyncThunk(
       }
       if (userSnap.id === uid) {
         // returns every information about user
-        return { uid: userSnap.id, ...userSnap.data() };
+
+        return { uid: userSnap.id, ...userSnap.data(), loggedUser: true };
       } else {
         // returns everything except bookmarks and likes of the user as the profile that we visited is not logged in user's profile
         return {
-          loggedUser: uid ? uid : null,
           uid: userSnap.id,
           displayName: userSnap.data().displayName,
           username: userSnap.data().username,
@@ -61,8 +84,8 @@ export const fetchUserInfo = createAsyncThunk(
           link: userSnap.data().link,
           bio: userSnap.data().bio,
           posts: userSnap.data().posts,
-          bookmarks: [],
           likedPosts: [],
+          loggedUser: false,
         };
       }
     } catch (error) {
@@ -231,3 +254,24 @@ export const followHandler = createAsyncThunk(
     }
   }
 );
+
+export const searchUsers = async (term, setter) => {
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("username", ">=", term.toLowerCase()),
+      where("username", "<=", term.toLowerCase() + "\uf8ff")
+    );
+    setter((state) => ({ ...state, fetchStatus: "FETCHING" }));
+    const usersSnapshot = await getDocs(q);
+    setter((state) => ({ ...state, fetchStatus: "FETCHED" }));
+    const searchedUsers = [];
+    usersSnapshot.forEach((user) =>
+      searchedUsers.push({ uid: user.id, ...user.data() })
+    );
+    setter((state) => ({ ...state, data: searchedUsers }));
+  } catch (error) {
+    setter((state) => ({ ...state, fetchStatus: "NOT_FETCHING" }));
+    toast.error(error.message);
+  }
+};

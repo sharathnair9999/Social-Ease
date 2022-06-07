@@ -10,27 +10,49 @@ import {
   addComment,
   deleteComment,
   editComment,
+  followHandler,
+  fetchSuggestions,
 } from "../../services";
+import { logoutUser } from "../Auth/authSlice";
 
 const initialState = {
-  uid: "",
-  userLoading: false,
-  validUser: true,
-  displayName: "",
-  photoURL: "",
-  username: "",
-  posts: [],
-  followers: [],
-  following: [],
-  bookmarks: [],
-  gender: "",
-  joinedAt: "",
-  link: "",
-  bio: "",
-  error: "",
-  likedPosts: [],
-  likedPostsLoading: false,
-  likedPostsError: "",
+  otherUser: {
+    uid: "",
+    displayName: "",
+    photoURL: "",
+    username: "",
+    posts: [],
+    followers: [],
+    following: [],
+    gender: "",
+    joinedAt: "",
+    link: "",
+    bio: "",
+    error: "",
+    validUser: "",
+  },
+
+  suggestions: [],
+
+  loggedUser: {
+    uid: "",
+    validUser: "",
+    displayName: "",
+    photoURL: "",
+    username: "",
+    posts: [],
+    followers: [],
+    following: [],
+    bookmarks: [],
+    gender: "",
+    joinedAt: "",
+    link: "",
+    bio: "",
+    error: "",
+    likedPosts: [],
+    likedPostsLoading: false,
+    likedPostsError: "",
+  },
 
   // Single Post State
   singlePost: {
@@ -53,59 +75,81 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(fetchUserInfo.pending, (state) => {
-      state.userLoading = true;
+    builder.addCase(fetchSuggestions.fulfilled, (state, { payload }) => {
+      state.suggestions = payload.allUsers.filter(
+        (person) => !person.followers.some((p) => p === payload.uid)
+      );
     });
+    builder.addCase(fetchSuggestions.rejected, (state, payload) => {
+      toast.error(payload);
+    });
+
     builder.addCase(fetchUserInfo.fulfilled, (state, { payload }) => {
-      state.userLoading = false;
-      state.validUser = true;
-      state.bookmarks = payload.bookmarks;
-      state.uid = payload.uid;
-      state.likedPosts = payload.likedPosts;
-      state.followers = payload.followers;
-      state.following = payload.following;
-      state.joinedAt = payload.joinedAt;
-      state.bio = payload.bio;
-      state.link = payload.link;
-      state.displayName = payload.displayName;
-      state.photoURL = payload.photoURL;
-      state.username = payload.username;
-      state.posts = payload.posts;
+      if (payload.loggedUser) {
+        state.loggedUser.validUser = true;
+        state.loggedUser.bookmarks = payload.bookmarks;
+        state.loggedUser.uid = payload.uid;
+        state.loggedUser.likedPosts = payload.likedPosts;
+        state.loggedUser.followers = payload.followers;
+        state.loggedUser.following = payload.following;
+        state.loggedUser.joinedAt = payload.joinedAt;
+        state.loggedUser.bio = payload.bio;
+        state.loggedUser.link = payload.link;
+        state.loggedUser.displayName = payload.displayName;
+        state.loggedUser.photoURL = payload.photoURL;
+        state.loggedUser.username = payload.username;
+        state.loggedUser.posts = payload.posts;
+      } else {
+        state.otherUser.validUser = true;
+        state.otherUser.uid = payload.uid;
+        state.otherUser.likedPosts = payload.likedPosts;
+        state.otherUser.followers = payload.followers;
+        state.otherUser.following = payload.following;
+        state.otherUser.joinedAt = payload.joinedAt;
+        state.otherUser.bio = payload.bio;
+        state.otherUser.link = payload.link;
+        state.otherUser.displayName = payload.displayName;
+        state.otherUser.photoURL = payload.photoURL;
+        state.otherUser.username = payload.username;
+        state.otherUser.posts = payload.posts;
+      }
     });
     builder.addCase(fetchUserInfo.rejected, (state, { payload }) => {
-      state.userLoading = false;
-      state.error = payload;
+      state.loggedUser.validUser = false;
+      state.otherUser.validUser = false;
+      state.loggedUser.error = payload;
+      state.otherUser.error = payload;
     });
 
     // updating user profile information
     builder.addCase(updateUserInfo.pending, (state) => {
-      state.userLoading = true;
+      state.loggedUser.userLoading = true;
     });
     builder.addCase(updateUserInfo.fulfilled, (state, { payload }) => {
-      state.userLoading = false;
-      state.bio = payload.bio;
-      state.link = payload.link;
-      state.displayName = payload.displayName;
-      state.photoURL = payload.photoURL;
-      state.username = payload.username;
+      state.loggedUser.userLoading = false;
+      state.loggedUser.bio = payload.bio;
+      state.loggedUser.link = payload.link;
+      state.loggedUser.displayName = payload.displayName;
+      state.loggedUser.photoURL = payload.photoURL;
+      state.loggedUser.username = payload.username;
       toast.success("Updated Details Successfully");
     });
     builder.addCase(updateUserInfo.rejected, (state, { payload }) => {
-      state.userLoading = false;
-      state.error = payload;
+      state.loggedUser.userLoading = false;
+      state.loggedUser.error = payload;
     });
 
     // get all posts the current logged in user has liked
     builder.addCase(fetchUserLikedPosts.pending, (state) => {
-      state.likedPostsLoading = true;
+      state.loggedUser.likedPostsLoading = true;
     });
     builder.addCase(fetchUserLikedPosts.fulfilled, (state, { payload }) => {
-      state.likedPostsLoading = false;
-      state.likedPosts = payload;
+      state.loggedUser.likedPostsLoading = false;
+      state.loggedUser.likedPosts = payload;
     });
     builder.addCase(fetchUserLikedPosts.rejected, (state, { payload }) => {
-      state.likedPostsLoading = false;
-      state.likedPostsError = payload;
+      state.loggedUser.likedPostsLoading = false;
+      state.loggedUser.likedPostsError = payload;
     });
 
     // Fetching Single post
@@ -177,11 +221,11 @@ const userSlice = createSlice({
     builder.addCase(
       handleLike.fulfilled,
       (state, { payload: { isLiked, postId, uid } }) => {
-        state.likedPosts = isLiked
-          ? state.likedPosts.filter((post) => post.postId !== postId)
-          : state.likedPosts;
+        state.loggedUser.likedPosts = isLiked
+          ? state.loggedUser.likedPosts.filter((post) => post.postId !== postId)
+          : state.loggedUser.likedPosts;
 
-        state.bookmarks = state.bookmarks.map((post) =>
+        state.loggedUser.bookmarks = state.loggedUser.bookmarks.map((post) =>
           post.postId === postId
             ? {
                 ...post,
@@ -214,6 +258,38 @@ const userSlice = createSlice({
     // update comment from single post page
     builder.addCase(editComment.fulfilled, (state, { payload }) => {
       state.singlePost = { ...state.singlePost, comments: payload.newComments };
+    });
+
+    // follow / unfollow a user
+
+    builder.addCase(
+      followHandler.fulfilled,
+      (state, { payload: { isFollowing, personId, uid, user } }) => {
+        state.loggedUser.following = isFollowing
+          ? state.loggedUser.following.filter((user) => user !== personId)
+          : [...state.loggedUser.following, personId];
+        state.otherUser.followers = isFollowing
+          ? state.otherUser.followers.filter((user) => user !== uid)
+          : [...state.otherUser.followers, uid];
+        state.suggestions = isFollowing
+          ? [...state.suggestions, user]
+          : state.suggestions.filter((person) => person.uid !== personId);
+      }
+    );
+    builder.addCase(logoutUser, (state) => {
+      state.loggedUser.validUser = true;
+      state.loggedUser.bookmarks = [];
+      state.loggedUser.uid = "";
+      state.loggedUser.likedPosts = [];
+      state.loggedUser.followers = [];
+      state.loggedUser.following = [];
+      state.loggedUser.joinedAt = "";
+      state.loggedUser.bio = "";
+      state.loggedUser.link = "";
+      state.loggedUser.displayName = "";
+      state.loggedUser.photoURL = "";
+      state.loggedUser.username = "";
+      state.loggedUser.posts = [];
     });
   },
 });

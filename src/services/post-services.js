@@ -23,9 +23,15 @@ import { v4 as uuid } from "uuid";
 
 export const fetchFeedPosts = createAsyncThunk(
   "posts/fetchFeedPosts",
-  async (uid, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
-      const query = feedPostsQuery(uid);
+      const {
+        user: {
+          loggedUser: { following },
+        },
+        auth: { uid },
+      } = getState();
+      const query = feedPostsQuery(following, uid);
       let feedPosts = [];
       const feedPostsSnapShot = await getDocs(query);
       for await (const feedPost of feedPostsSnapShot.docs) {
@@ -79,11 +85,10 @@ export const addNewPost = createAsyncThunk(
       auth: { uid, displayName, username, photoURL },
     } = getState();
     try {
-      const createdAt = serverTimestamp();
       const postRef = await addDoc(postsRef, {
         ...details,
         uid,
-        createdAt,
+        createdAt: serverTimestamp(),
       });
       // Add the post id into the posts array of user's profile details to show in the profile page of the user
 
@@ -93,8 +98,8 @@ export const addNewPost = createAsyncThunk(
       const post = {
         postId: postRef.id,
         uid,
-        createdAt,
         ...details,
+        createdAt: { seconds: Math.round(Date.now() / 1000) },
         displayName,
         username,
         photoURL,
