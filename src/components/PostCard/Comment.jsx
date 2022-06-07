@@ -158,7 +158,7 @@ export const Comment = ({
             ref={emojisRef}
             setShowEmojis={setShowEmojis}
             setDetails={setComment}
-            fieldName="comment"
+            fieldName="commentText"
           />
         )}
       </div>
