@@ -29,8 +29,8 @@ const PeopleListModal = React.forwardRef(
           {text}
         </p>
         <section className=" max-h-[21rem] h-full overflow-y-auto flex justify-start items-start gap-4 flex-col">
-          {peopleInfo?.map((person, id) => (
-            <PersonCard key={id} user={person} />
+          {peopleInfo?.map((person) => (
+            <PersonCard key={person.uid} user={person} />
           ))}
         </section>
       </div>
