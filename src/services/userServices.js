@@ -204,3 +204,30 @@ export const fetchBookmarkedPosts = createAsyncThunk(
     }
   }
 );
+
+// Follow a user
+
+export const followHandler = createAsyncThunk(
+  `user/followHandler`,
+  async ({ personId, user }, { rejectWithValue, getState }) => {
+    try {
+      const {
+        auth: { uid },
+        user: {
+          loggedUser: { following },
+        },
+      } = getState();
+      const isFollowing = following.some((user) => user === personId);
+
+      await updateDoc(doc(db, "users", uid), {
+        following: isFollowing ? arrayRemove(personId) : arrayUnion(personId),
+      });
+      await updateDoc(doc(db, "users", personId), {
+        followers: isFollowing ? arrayRemove(uid) : arrayUnion(uid),
+      });
+      return { isFollowing, personId, uid, user };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
