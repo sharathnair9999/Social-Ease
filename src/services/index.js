@@ -33,6 +33,9 @@ import {
   fetchUserLikedPosts,
   handleBookmark,
   fetchBookmarkedPosts,
+  followHandler,
+  fetchSuggestions,
+  searchUsers,
 } from "./userServices";
 export {
   logout,
@@ -63,4 +66,7 @@ export {
   deleteComment,
   addComment,
   editComment,
+  followHandler,
+  fetchSuggestions,
+  searchUsers,
 };
