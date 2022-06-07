@@ -12,9 +12,7 @@ const Brand = ({ full, logo, name }) => {
           className={`w-10 ${(full || logo) && "block"} ${name && "hidden"} `}
         />
         <span
-          className={` ${(name || full) && "block"} ${
-            logo && "hidden"
-          } font-satisfy font-bold  text-transparent text-4xl p-1 bg-clip-text bg-gradient-to-r from-cta-dark to-accent-1`}
+          className={`font-satisfy font-bold hidden md:block text-transparent text-4xl p-1 bg-clip-text bg-gradient-to-r from-cta-dark to-accent-1`}
         >
           SocialEase
         </span>
