@@ -55,14 +55,12 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
 
   useEffect(() => {
     if (file) {
-      console.log("uploading dp");
       uploadFile(file, setIsValid, setUserDetails, true, "photoURL");
       setFile("");
     }
   }, [file]);
   useEffect(() => {
     if (coverFile) {
-      console.log("uploading cover");
       uploadFile(coverFile, setIsValid, setUserDetails, true, "coverPhoto");
       setCoverFile("");
     }
@@ -71,8 +69,6 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
   useEffect(() => {
     setUserDetails(userInfo);
   }, [userInfo]);
-
-  console.log(userDetails);
 
   return (
     <form
