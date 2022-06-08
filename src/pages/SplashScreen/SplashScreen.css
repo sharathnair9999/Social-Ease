@@ -1,0 +1,68 @@
+@charset "UTF-8";
+.snippet {
+  position: relative;
+  padding: 2rem 5%;
+  margin: 1.5rem 0;
+  border-radius: 0.25rem;
+}
+
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 2rem 0;
+  margin: 0 -5%;
+  overflow: hidden;
+}
+
+/**
+ * ==============================================
+ * Dot Revolution
+ * ==============================================
+ */
+.dot-revolution {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, hsl(335, 77%, 37%), hsl(217, 82%, 30%));
+}
+
+.dot-revolution::before,
+.dot-revolution::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+}
+
+.dot-revolution::before {
+  left: 0;
+  top: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  transform-origin: 5px 20px;
+  background: linear-gradient(to right, hsl(335, 77%, 37%), hsl(217, 82%, 30%));
+  animation: dotRevolution 1.4s linear infinite;
+}
+
+.dot-revolution::after {
+  left: 0;
+  top: -30px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, hsl(335, 77%, 37%), hsl(217, 82%, 30%));
+  transform-origin: 5px 35px;
+  animation: dotRevolution 1s linear infinite;
+}
+
+@keyframes dotRevolution {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 0, 0);
+  }
+}

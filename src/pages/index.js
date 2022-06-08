@@ -10,7 +10,7 @@ import Explore from "./Explore/Explore";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import LikedPosts from "./LikedPosts";
 import UserPosts from "./UserPosts";
-import SplashScreen from "./SplashScreen";
+import SplashScreen from "./SplashScreen/SplashScreen";
 
 export {
   Login,
