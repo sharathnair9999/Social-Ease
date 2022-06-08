@@ -84,6 +84,7 @@ export const fetchUserInfo = createAsyncThunk(
           link: userSnap.data().link,
           bio: userSnap.data().bio,
           posts: userSnap.data().posts,
+          coverPhoto: userSnap.data().coverPhoto,
           likedPosts: [],
           loggedUser: false,
         };
@@ -106,6 +107,7 @@ export const updateUserInfo = createAsyncThunk(
         link: details.link,
         bio: details.bio,
         gender: details.gender,
+        coverPhoto: details.coverPhoto,
         username: details.username,
       });
       await updateProfile(auth.currentUser, {
@@ -116,6 +118,7 @@ export const updateUserInfo = createAsyncThunk(
         photoURL: details.photoURL,
         displayName: details.displayName,
         link: details.link,
+        coverPhoto: details.coverPhoto,
         bio: details.bio,
         gender: details.gender,
         username: details.username,

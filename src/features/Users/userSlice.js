@@ -28,6 +28,7 @@ const initialState = {
     joinedAt: "",
     link: "",
     bio: "",
+    coverPhoto: "",
     error: "",
     validUser: "",
   },
@@ -37,6 +38,7 @@ const initialState = {
   loggedUser: {
     uid: "",
     validUser: "",
+    coverPhoto: "",
     displayName: "",
     photoURL: "",
     username: "",
@@ -99,8 +101,10 @@ const userSlice = createSlice({
         state.loggedUser.photoURL = payload.photoURL;
         state.loggedUser.username = payload.username;
         state.loggedUser.posts = payload.posts;
+        state.loggedUser.coverPhoto = payload.coverPhoto;
       } else {
         state.otherUser.validUser = true;
+        state.otherUser.coverPhoto = payload.coverPhoto;
         state.otherUser.uid = payload.uid;
         state.otherUser.likedPosts = payload.likedPosts;
         state.otherUser.followers = payload.followers;
@@ -129,6 +133,7 @@ const userSlice = createSlice({
       state.loggedUser.userLoading = false;
       state.loggedUser.bio = payload.bio;
       state.loggedUser.link = payload.link;
+      state.loggedUser.coverPhoto = payload.coverPhoto;
       state.loggedUser.displayName = payload.displayName;
       state.loggedUser.photoURL = payload.photoURL;
       state.loggedUser.username = payload.username;
@@ -288,6 +293,7 @@ const userSlice = createSlice({
       state.loggedUser.link = "";
       state.loggedUser.displayName = "";
       state.loggedUser.photoURL = "";
+      state.loggedUser.coverPhoto = "";
       state.loggedUser.username = "";
       state.loggedUser.posts = [];
     });

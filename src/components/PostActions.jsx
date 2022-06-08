@@ -38,7 +38,7 @@ const PostActions = ({ postId, setShowComments, likes }) => {
         } bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-cta-dark    dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white`}
       >
         {isLiked ? <AiFillLike /> : <AiOutlineLike />}
-        <span>{isLiked ? "Remove Like" : "Like"}</span>
+        <span>{isLiked ? "Liked" : "Like"}</span>
       </button>
       <button
         type="button"

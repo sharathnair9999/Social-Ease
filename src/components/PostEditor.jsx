@@ -48,7 +48,8 @@ const PostEditor = React.forwardRef(
             await deleteFile(
               firestoreRef(storage, postDetails.media[0]),
               setPostDetails,
-              "media"
+              "media",
+              ""
             );
           }
           setPostDetails(postState);
