@@ -15,7 +15,10 @@ const Brand = ({ full, logo, name, large, medium }) => {
         />
         <span
           className={`font-satisfy font-bold hidden md:block text-transparent ${
-            large ? "text-7xl " : "text-5xl"
+            large ? "text-7xl " : "text-4xl"
+          }
+          ${
+            medium ? "text-6xl " : "text-4xl"
           }  p-1 bg-clip-text bg-gradient-to-r from-cta-dark to-accent-1`}
         >
           SocialEase
