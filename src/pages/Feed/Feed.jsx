@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, Modal, PostCard, PostEditor } from "../../components";
+import {
+  Button,
+  Modal,
+  PostCard,
+  PostEditor,
+  PostSkeleton,
+} from "../../components";
 import { fetchFeedPosts } from "../../services";
 // Feed posts should contain only the posts of people that you follow. Will handle this after implementing follow feature
 const Feed = () => {
@@ -12,7 +18,7 @@ const Feed = () => {
   } = useSelector((state) => state.user);
   const ref = React.createRef();
 
-  const { feedPosts } = useSelector((state) => state.posts);
+  const { feedPosts, feedPostsLoading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,7 +54,10 @@ const Feed = () => {
           </Button>
         </section>
       </div>
-
+      {feedPostsLoading &&
+        [...Array(10)].map((_, id) => (
+          <PostSkeleton key={id} textOnly={id % 2 === 0} />
+        ))}
       {feedPosts.length === 0
         ? "Seems like you dont follow anyone"
         : feedPosts.map((post) => (

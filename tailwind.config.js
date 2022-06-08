@@ -26,7 +26,16 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
       },
     },
+    skeletonScreen: {
+      DEFAULT: {
+        baseColor: "#c7c7c7",
+        movingColor:
+          "linear-gradient(to right, transparent 0%, #E8E8E8 50%, transparent 100%)",
+        duration: "1s",
+        timing: "cubic-bezier(0.4, 0.0, 0.2, 1)",
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("@gradin/tailwindcss-skeleton-screen")],
   darkMode: "class",
 };

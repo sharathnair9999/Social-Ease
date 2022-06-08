@@ -5,7 +5,7 @@ import { debounce } from "./debounce";
 import { constants, capitalize } from "./constants";
 import { uploadFile, deleteFile } from "./mediaHelpers";
 import { getReadableDate, getMonthYear } from "./readableDate";
-import { sortByLatest, sortByTrending } from "./sortMethods";
+import { sortPosts } from "./sortMethods";
 
 export {
   ProtectedRoute,
@@ -18,6 +18,5 @@ export {
   getReadableDate,
   getMonthYear,
   capitalize,
-  sortByLatest,
-  sortByTrending,
+  sortPosts,
 };

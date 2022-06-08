@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { PostCard } from "../components";
+import { PostCard, PostSkeleton } from "../components";
 import { fetchUserLikedPosts } from "../services";
 
 const LikedPosts = () => {
@@ -18,7 +18,9 @@ const LikedPosts = () => {
     <div className="w-full">
       {likedPostsError && likedPostsError}
       {likedPostsLoading
-        ? " Loading" // will add loading gif and error gif after completing the app
+        ? [...Array(10)].map((_, id) => (
+            <PostSkeleton key={id} textOnly={id % 2 === 0} />
+          ))
         : likedPosts?.length > 0
         ? likedPosts?.map((post) => (
             <PostCard key={post.postId} postInfo={post} />

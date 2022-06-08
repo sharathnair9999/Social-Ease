@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { PostCard } from "../../components";
+import { PostCard, PostSkeleton } from "../../components";
 import { fetchBookmarkedPosts } from "../../services";
 
 const Bookmarks = () => {
@@ -17,7 +17,9 @@ const Bookmarks = () => {
     <div className="w-full">
       {bookmarkPostsError && bookmarkPostsError}
       {bookmarkPostsLoading
-        ? " Loading" // will add loading gif and error gif after completing the app
+        ? [...Array(5)].map((_, id) => (
+            <PostSkeleton key={id} textOnly={id % 2 === 0} />
+          ))
         : bookmarkPosts.length > 0
         ? bookmarkPosts.map((post) => (
             <PostCard key={post.postId} postInfo={post} bookmarkPost />
