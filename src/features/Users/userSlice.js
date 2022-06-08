@@ -31,6 +31,7 @@ const initialState = {
     coverPhoto: "",
     error: "",
     validUser: "",
+    userLoading: false,
   },
 
   suggestions: [],
@@ -54,6 +55,7 @@ const initialState = {
     likedPosts: [],
     likedPostsLoading: false,
     likedPostsError: "",
+    userLoading: false,
   },
 
   // Single Post State
@@ -86,8 +88,14 @@ const userSlice = createSlice({
       toast.error(payload);
     });
 
+    builder.addCase(fetchUserInfo.pending, (state) => {
+      state.loggedUser.userLoading = true;
+      state.otherUser.userLoading = true;
+    });
+
     builder.addCase(fetchUserInfo.fulfilled, (state, { payload }) => {
       if (payload.loggedUser) {
+        state.loggedUser.userLoading = false;
         state.loggedUser.validUser = true;
         state.loggedUser.bookmarks = payload.bookmarks;
         state.loggedUser.uid = payload.uid;
@@ -103,6 +111,7 @@ const userSlice = createSlice({
         state.loggedUser.posts = payload.posts;
         state.loggedUser.coverPhoto = payload.coverPhoto;
       } else {
+        state.otherUser.userLoading = false;
         state.otherUser.validUser = true;
         state.otherUser.coverPhoto = payload.coverPhoto;
         state.otherUser.uid = payload.uid;
@@ -120,6 +129,8 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchUserInfo.rejected, (state, { payload }) => {
       state.loggedUser.validUser = false;
+      state.otherUser.userLoading = false;
+      state.loggedUser.userLoading = false;
       state.otherUser.validUser = false;
       state.loggedUser.error = payload;
       state.otherUser.error = payload;

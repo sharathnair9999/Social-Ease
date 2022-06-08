@@ -7,6 +7,7 @@ import { BiLink } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { getMonthYear, capitalize, constants } from "../../helpers";
 import { fetchUserInfo, followHandler } from "../../services";
+import ProfileSkeleton from "./components/ProfileSkeleton";
 
 const UserProfile = () => {
   const { uid, isLoggedIn } = useSelector((state) => state.auth);
@@ -42,8 +43,8 @@ const UserProfile = () => {
 
   return (
     <>
-      {userInfo.validUser === "" ? (
-        "Loading " // will add skeletal loading while refactor
+      {userInfo.userLoading ? (
+        <ProfileSkeleton />
       ) : (
         <div className="relative flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
           {userInfo.uid === profileId && (
