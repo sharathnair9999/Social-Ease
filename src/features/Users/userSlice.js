@@ -158,13 +158,13 @@ const userSlice = createSlice({
     });
 
     // Fetching Single post
-    builder.addCase(fetchSinglePost.pending, ({ singlePostLoading }) => {
-      singlePostLoading = true;
+    builder.addCase(fetchSinglePost.pending, (state) => {
+      state.singlePostLoading = true;
     });
     builder.addCase(
       fetchSinglePost.fulfilled,
       (
-        { singlePost, singlePostError, singlePostLoading },
+        state,
         {
           payload: {
             uid,
@@ -180,38 +180,34 @@ const userSlice = createSlice({
           },
         }
       ) => {
-        singlePostError = "";
-        singlePost.uid = uid;
-        singlePost.comments = comments;
-        singlePost.createdAt = createdAt;
-        singlePost.postId = postId;
-        singlePost.postDescription = postDescription;
-        singlePost.likes = likes;
-        singlePost.displayName = displayName;
-        singlePost.photoURL = photoURL;
-        singlePost.username = username;
-        singlePost.media = media;
-        singlePostLoading = false;
+        state.singlePostError = "";
+        state.singlePost.uid = uid;
+        state.singlePost.comments = comments;
+        state.singlePost.createdAt = createdAt;
+        state.singlePost.postId = postId;
+        state.singlePost.postDescription = postDescription;
+        state.singlePost.likes = likes;
+        state.singlePost.displayName = displayName;
+        state.singlePost.photoURL = photoURL;
+        state.singlePost.username = username;
+        state.singlePost.media = media;
+        state.singlePostLoading = false;
       }
     );
-    builder.addCase(
-      fetchSinglePost.rejected,
-      ({ singlePostLoading, singlePostError, singlePost }, { payload }) => {
-        singlePostLoading = false;
-        singlePostError = payload;
-        toast.error(singlePostError);
-        singlePost.uid = "";
-        singlePost.comments = [];
-        singlePost.createdAt = "";
-        singlePost.postId = "";
-        singlePost.postDescription = "";
-        singlePost.likes = [];
-        singlePost.displayName = "";
-        singlePost.photoURL = "";
-        singlePost.username = "";
-        singlePost.media = [];
-      }
-    );
+    builder.addCase(fetchSinglePost.rejected, (state, { payload }) => {
+      state.singlePostLoading = false;
+      toast.error(payload);
+      state.singlePost.uid = "";
+      state.singlePost.comments = [];
+      state.singlePost.createdAt = "";
+      state.singlePost.postId = "";
+      state.singlePost.postDescription = "";
+      state.singlePost.likes = [];
+      state.singlePost.displayName = "";
+      state.singlePost.photoURL = "";
+      state.singlePost.username = "";
+      state.singlePost.media = [];
+    });
 
     // handling edit post from single post page
     builder.addCase(

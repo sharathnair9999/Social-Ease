@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { PostCard } from "../../components";
+import { PostCard, PostSkeleton } from "../../components";
 import { fetchSinglePost } from "../../services";
 
 const SinglePost = () => {
@@ -13,10 +13,12 @@ const SinglePost = () => {
     dispatch(fetchSinglePost(postId));
   }, [dispatch, postId]);
 
+  console.log(singlePostLoading);
+
   return (
     <div className="mx-1">
       {singlePostLoading ? (
-        "Loading " //will updat with an svg soon
+        <PostSkeleton />
       ) : (
         <div>
           <PostCard postInfo={singlePost} singlePost enableComments />
