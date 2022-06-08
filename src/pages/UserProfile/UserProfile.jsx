@@ -6,7 +6,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { getMonthYear, capitalize, constants } from "../../helpers";
-import { fetchUserInfo } from "../../services";
+import { fetchUserInfo, followHandler } from "../../services";
 
 const UserProfile = () => {
   const { uid, isLoggedIn } = useSelector((state) => state.auth);
@@ -18,8 +18,12 @@ const UserProfile = () => {
   const [showPeopleModal, setShowPeopleModal] = useState(false);
   const peopleModalRef = useRef();
 
-  const userInfo = useSelector((state) => state.user);
+  const userProfile = useSelector((state) => state.user);
+  const userInfo =
+    profileId === uid ? userProfile.loggedUser : userProfile.otherUser;
+
   const postsInfo = useSelector((state) => state.posts);
+  const isFollowing = userInfo.followers.some((person) => person === uid);
 
   useEffect(() => {
     dispatch(fetchUserInfo(profileId));
@@ -32,135 +36,158 @@ const UserProfile = () => {
   };
   const handleFollowingModal = () => {
     setShowPeopleModal(true);
-    setPeople(userInfo.followers);
+    setPeople(userInfo.following);
     setModalTitle("Following");
   };
 
   return (
-    <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
-      {userInfo.uid === profileId && (
-        <Modal showModal={showModal}>
-          <EditProfileModal userInfo={userInfo} setShowModal={setShowModal} />
-        </Modal>
-      )}
-      <img
-        className={`md:w-32 ${
-          !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
-        } md:h-32 w-24 h-24  mx-auto mb-2 object-cover `}
-        src={
-          userInfo?.photoURL ? userInfo.photoURL : constants.imgUrls.invalidUser
-        }
-        alt={userInfo.displayName}
-      />
-      <p className="flex justify-between w-full items-end gap-4">
-        <span
-          className={`font-extrabold text-2xl ${
-            !userInfo.displayName && "mx-auto"
-          } `}
-        >
-          {userInfo.displayName
-            ? capitalize(userInfo.displayName)
-            : `User Does Not Exist`}
-        </span>
-        {isLoggedIn && profileId === uid && (
-          <button
-            className="bg-cta-dark text-white text-lg hover:bg-cta-dark/80 font-bold transition-all p-2 rounded-full flex justify-center items-center gap-2"
-            onClick={() => setShowModal(true)}
-          >
-            <AiFillEdit />
-          </button>
-        )}
-      </p>
-      {userInfo.displayName && (
-        <div className="w-full">
-          <section className="flex justify-start items-center gap-y-1  gap-x-4 flex-wrap ">
-            <span className="text-md ">{`@${userInfo.username}`}</span>
-            {userInfo.link && (
-              <span className="flex items-center text-md">
-                <BiLink />
-                <a
-                  href={userInfo.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-cta-dark underline underline-offset-2"
-                >
-                  {userInfo.link}
-                </a>
-              </span>
-            )}
-          </section>
-          {userInfo.bio && <p className="py-1">{userInfo.bio}</p>}
-          <p className="text-sm py-1">{`Joined on ${getMonthYear(
-            userInfo.joinedAt.seconds
-          )}`}</p>
-          <p className="flex justify-start items-center gap-10 my-1">
-            <button
-              onClick={handleFollowersModal}
-              className="text-md border-b-2 border-cta-dark pb- hover:bg-cta-light cursor-pointer px-2 hover:scale-105 font-semibold rounded-sm"
-            >{`${userInfo.followers.length} Followers`}</button>
-            <button
-              onClick={handleFollowingModal}
-              className="text-md border-b-2 border-cta-dark pb- hover:bg-cta-light cursor-pointer px-2 hover:scale-105 font-semibold rounded-sm"
-            >{`${userInfo.following.length} Following`}</button>
-          </p>
-          <section className="flex justify-between items-center w-full my-1">
-            <NavLink
-              className={({ isActive }) =>
-                ` flex justify-center items-center flex-grow px-2 py-1${
-                  isActive
-                    ? " underline shadow-md underline-offset-2  font-bold bg-slate-50"
-                    : ""
-                } text-cta-dark`
-              }
-              to={"./"}
+    <>
+      {userInfo.validUser === "" ? (
+        "Loading " // will add skeletal loading while refactor
+      ) : (
+        <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
+          {userInfo.uid === profileId && (
+            <Modal showModal={showModal}>
+              <EditProfileModal
+                userInfo={userInfo}
+                setShowModal={setShowModal}
+              />
+            </Modal>
+          )}
+          <img
+            className={`md:w-32 ${
+              !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
+            } md:h-32 w-24 h-24  mx-auto mb-2 object-cover `}
+            src={
+              userInfo?.photoURL
+                ? userInfo.photoURL
+                : constants.imgUrls.invalidUser
+            }
+            alt={userInfo.displayName}
+          />
+          <p className="flex justify-between w-full items-end gap-4">
+            <span
+              className={`font-extrabold text-2xl ${
+                !userInfo.displayName && "mx-auto"
+              } `}
             >
-              {`Posts (${userInfo.posts?.length})`}
-            </NavLink>
-            {isLoggedIn && profileId === uid && (
-              <NavLink
-                className={({ isActive }) =>
-                  ` flex justify-center items-center flex-grow px-2 py-1${
-                    isActive
-                      ? " shadow-md underline underline-offset-2  font-bold bg-slate-50"
-                      : ""
-                  } text-cta-dark`
-                }
-                to={"./bookmarks"}
+              {userInfo.displayName
+                ? capitalize(userInfo.displayName)
+                : `User Does Not Exist`}
+            </span>
+            {!userInfo.error && uid !== profileId && (
+              <button
+                onClick={() => dispatch(followHandler(profileId))}
+                className={`mr-auto ml-2 text-md rounded-lg font-medium ${
+                  isFollowing
+                    ? `bg-cta-light text-cta-dark`
+                    : `bg-cta-dark text-cta-light`
+                }  shadow-lg px-2 py-1  `}
               >
-                {`Bookmarks (${postsInfo.bookmarkPosts.length})`}
-              </NavLink>
+                {isFollowing ? "Unfollow" : "Follow"}
+              </button>
             )}
             {isLoggedIn && profileId === uid && (
-              <NavLink
-                className={({ isActive }) =>
-                  ` flex justify-center items-center flex-grow px-2 py-1${
-                    isActive
-                      ? " shadow-md underline underline-offset-2 font-bold bg-slate-50"
-                      : ""
-                  } text-cta-dark`
-                }
-                to={"./likes"}
+              <button
+                className="bg-cta-light/70 text-cta-dark text-lg hover:bg-cta-dark/10 font-bold transition-all p-2 rounded-full flex justify-center items-center gap-2"
+                onClick={() => setShowModal(true)}
               >
-                {`Likes (${userInfo.likedPosts.length})`}
-              </NavLink>
+                <AiFillEdit />
+              </button>
             )}
-          </section>
-          <div className="w-full">
-            <Outlet context={{ userInfo }} />
-          </div>
+          </p>
+          {userInfo.displayName && (
+            <div className="w-full">
+              <section className="flex justify-start items-center gap-y-1  gap-x-4 flex-wrap ">
+                <span className="text-md ">{`@${userInfo.username}`}</span>
+                {userInfo.link && (
+                  <span className="flex items-center text-md">
+                    <BiLink />
+                    <a
+                      href={userInfo.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-cta-dark underline underline-offset-2"
+                    >
+                      {userInfo.link}
+                    </a>
+                  </span>
+                )}
+              </section>
+              {userInfo.bio && <p className="py-1">{userInfo.bio}</p>}
+              <p className="text-sm py-1">{`Joined on ${getMonthYear(
+                userInfo.joinedAt.seconds
+              )}`}</p>
+              <p className="flex justify-start items-center gap-10 my-1">
+                <button
+                  onClick={handleFollowersModal}
+                  className="text-md border-b-2 border-cta-dark pb- hover:bg-cta-light cursor-pointer px-2 hover:scale-105 font-semibold rounded-sm"
+                >{`${userInfo.followers.length} Followers`}</button>
+                <button
+                  onClick={handleFollowingModal}
+                  className="text-md border-b-2 border-cta-dark pb- hover:bg-cta-light cursor-pointer px-2 hover:scale-105 font-semibold rounded-sm"
+                >{`${userInfo.following.length} Following`}</button>
+              </p>
+              <section className="flex justify-between items-center w-full my-1">
+                <NavLink
+                  className={({ isActive }) =>
+                    ` flex justify-center items-center flex-grow px-2 py-1${
+                      isActive
+                        ? " underline shadow-md underline-offset-2  font-bold bg-slate-50"
+                        : ""
+                    } text-cta-dark`
+                  }
+                  to={"./"}
+                >
+                  {`Posts (${userInfo.posts?.length})`}
+                </NavLink>
+                {isLoggedIn && profileId === uid && (
+                  <NavLink
+                    className={({ isActive }) =>
+                      ` flex justify-center items-center flex-grow px-2 py-1${
+                        isActive
+                          ? " shadow-md underline underline-offset-2  font-bold bg-slate-50"
+                          : ""
+                      } text-cta-dark`
+                    }
+                    to={"./bookmarks"}
+                  >
+                    {`Bookmarks (${postsInfo.bookmarkPosts.length})`}
+                  </NavLink>
+                )}
+                {isLoggedIn && profileId === uid && (
+                  <NavLink
+                    className={({ isActive }) =>
+                      ` flex justify-center items-center flex-grow px-2 py-1${
+                        isActive
+                          ? " shadow-md underline underline-offset-2 font-bold bg-slate-50"
+                          : ""
+                      } text-cta-dark`
+                    }
+                    to={"./likes"}
+                  >
+                    {`Likes (${userInfo.likedPosts.length})`}
+                  </NavLink>
+                )}
+              </section>
+              <div className="w-full">
+                <Outlet context={{ userInfo }} />
+              </div>
+            </div>
+          )}
+          {showPeopleModal && (
+            <Modal showModal={showPeopleModal}>
+              <PeopleListModal
+                ref={peopleModalRef}
+                setShowModal={setShowPeopleModal}
+                text={modalTitle}
+                people={people}
+              />
+            </Modal>
+          )}
         </div>
       )}
-      {showPeopleModal && (
-        <Modal showModal={showPeopleModal}>
-          <PeopleListModal
-            ref={peopleModalRef}
-            setShowModal={setShowPeopleModal}
-            text={modalTitle}
-            people={people}
-          />
-        </Modal>
-      )}
-    </div>
+    </>
   );
 };
 

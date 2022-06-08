@@ -24,7 +24,11 @@ import { loginAction, logoutUser } from "./features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { fetchBookmarkedPosts } from "./services";
+import {
+  fetchBookmarkedPosts,
+  fetchSuggestions,
+  fetchUserInfo,
+} from "./services";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,10 +47,12 @@ function App() {
             username: userDetails?.username ?? email.split("@")[0],
           })
         );
+        dispatch(fetchUserInfo(uid));
         dispatch(fetchBookmarkedPosts(uid));
       } else {
         dispatch(logoutUser());
       }
+      dispatch(fetchSuggestions());
     });
 
     return () => unsubscribe();

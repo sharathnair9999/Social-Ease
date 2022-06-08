@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Brand from "../Brand";
 import Button from "./components/Button";
 import { logout } from "../../services";
+import Searchbar from "../Searchbar";
 
 const TopNav = () => {
   const navigate = useNavigate();
@@ -25,12 +26,12 @@ const TopNav = () => {
     <div
       className={` ${
         colorChange ? "bg-cta-light " : "bg-transparent"
-      } flex justify-start items-center p-2 fixed left-0 right-0 top-0 h-14 transition-all z-[1]`}
+      } flex justify-between items-center p-2 fixed left-0 right-0 top-0 h-14 transition-all z-[1]`}
     >
       <Brand full />
+      <Searchbar />
       {authState.isLoggedIn && (
         <Button
-          className={`ml-auto`}
           onClick={() => {
             logout();
           }}
@@ -39,9 +40,7 @@ const TopNav = () => {
         </Button>
       )}
       {!authState.isLoggedIn && (
-        <Button className={`ml-auto`} onClick={() => navigate("/login")}>
-          Login
-        </Button>
+        <Button onClick={() => navigate("/login")}>Login</Button>
       )}
     </div>
   );

@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { queryUserCollection, universalSnapshot } from "../../services";
 import PersonCard from "../PersonCard";
 
 const FollowMore = () => {
   const { uid } = useSelector((state) => state.auth);
-  const { pathname } = useLocation();
-  const [userList, setUserList] = useState([]);
-  useEffect(() => {
-    const unsubscribe = universalSnapshot(
-      queryUserCollection,
-      setUserList,
-      "uid"
-    );
 
-    return unsubscribe;
-  }, []);
+  const { suggestions } = useSelector((state) => state.user);
+  const { pathname } = useLocation();
 
   return (
     <div
@@ -36,7 +27,8 @@ const FollowMore = () => {
         </Link>
       </div>
       <div className="follow-more w-full flex justify-start items-start gap-4 flex-col h-96 overflow-y-auto">
-        {userList
+        {suggestions
+          .slice(0, 4)
           .filter((user) => user.uid !== uid)
           ?.map((user) => (
             <PersonCard key={user.uid} user={user} />

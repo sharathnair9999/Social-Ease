@@ -166,12 +166,12 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
       {likes?.length > 0 && (
         <p
           onClick={() => setOpenLikesModal(true)}
-          className="px-2 text-sm flex justify-start items-center gap-2"
+          className="px-2 text-sm flex justify-start items-center gap-2 max-w-fit"
         >
           <AiFillLike className="bg-cta-dark rounded-full p-[2px] w-5 h-5 text-cta-light flex justify-center items-center" />
           <span
             onClick={() => setOpenLikesModal(true)}
-            className="hover:underline cursor-pointer"
+            className="hover:underline cursor-pointer "
           >
             {`${likes?.length} Likes`}
           </span>

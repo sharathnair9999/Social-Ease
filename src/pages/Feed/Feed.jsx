@@ -7,14 +7,17 @@ import { fetchFeedPosts } from "../../services";
 const Feed = () => {
   const { displayName, photoURL, uid } = useSelector((state) => state.auth);
   const [showModal, setShowModal] = useState(false);
+  const {
+    loggedUser: { following },
+  } = useSelector((state) => state.user);
   const ref = React.createRef();
 
   const { feedPosts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchFeedPosts(uid));
-  }, [dispatch, uid]);
+    following.length > 0 && dispatch(fetchFeedPosts(following));
+  }, [dispatch, uid, following]);
 
   return (
     <div>
@@ -45,9 +48,11 @@ const Feed = () => {
         </section>
       </div>
 
-      {feedPosts?.map((post) => (
-        <PostCard key={post.postId} postInfo={post} />
-      ))}
+      {feedPosts.length === 0
+        ? "Seems like you dont follow anyone"
+        : feedPosts.map((post) => (
+            <PostCard key={post.postId} postInfo={post} />
+          ))}
     </div>
   );
 };

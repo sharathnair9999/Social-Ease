@@ -11,6 +11,7 @@ import {
   fetchExplorePosts,
   fetchFeedPosts,
   fetchUserPosts,
+  followHandler,
   handleBookmark,
   handleLike,
 } from "../../services";
@@ -110,6 +111,9 @@ const postSlice = createSlice({
         (post) => post.postId !== payload
       );
       state.userPosts = state.userPosts.filter(
+        (post) => post.postId !== payload
+      );
+      state.bookmarkPosts = state.bookmarkPosts.filter(
         (post) => post.postId !== payload
       );
     });
@@ -252,6 +256,9 @@ const postSlice = createSlice({
     });
     builder.addCase(deleteComment.rejected, (_, { payload }) => {
       toast.error(payload);
+    });
+    builder.addCase(followHandler.fulfilled, (state, { payload: { uid } }) => {
+      state.feedPosts = state.feedPosts.filter((post) => post.uid === uid);
     });
   },
 });
