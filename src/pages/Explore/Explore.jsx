@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PostCard } from "../../components";
+import { PostCard, PostSkeleton } from "../../components";
 import { fetchExplorePosts } from "../../services";
 import { BsGraphUp } from "react-icons/bs";
 import { MdDateRange } from "react-icons/md";
-import { sortByLatest, sortByTrending } from "../../helpers";
+import { sortPosts } from "../../helpers";
 
 const Explore = () => {
-  const { explorePosts } = useSelector((state) => state.posts);
+  const { explorePosts, explorePostsLoading } = useSelector(
+    (state) => state.posts
+  );
   const dispatch = useDispatch();
-  const [sortBy, setSortBy] = useState({ latest: false, trending: true });
-  const trendingPosts = sortByTrending([...explorePosts], sortBy.trending);
-  const latestPosts = sortByLatest([...trendingPosts], sortBy.latest);
+  const [sortBy, setSortBy] = useState("");
+  const sortedPosts = sortPosts(explorePosts, sortBy);
   useEffect(() => {
     dispatch(fetchExplorePosts());
   }, [dispatch]);
@@ -19,15 +20,9 @@ const Explore = () => {
     <div>
       <div className="flex justify-end items-center gap-4 sticky bg-white w-full top-[3.25rem] p-1">
         <button
-          onClick={() =>
-            setSortBy((state) => ({
-              ...state,
-              trending: false,
-              latest: !state.latest,
-            }))
-          }
+          onClick={() => setSortBy("LATEST")}
           className={`px-2 py-1 rounded-md text-xs ${
-            sortBy.latest
+            sortBy === "LATEST"
               ? "bg-cta-dark text-cta-light"
               : "bg-cta-light text-cta-dark"
           }  hover:bg-cta-dark/20 hover:text-cta-dark font-medium  shadow-md flex justify-center items-center gap-2`}
@@ -36,15 +31,9 @@ const Explore = () => {
           <span> Latest</span>
         </button>
         <button
-          onClick={() =>
-            setSortBy((state) => ({
-              ...state,
-              latest: false,
-              trending: !state.trending,
-            }))
-          }
+          onClick={() => setSortBy("TRENDING")}
           className={`px-2 py-1 rounded-md text-xs ${
-            sortBy.trending
+            sortBy === "TRENDING"
               ? "bg-cta-dark text-cta-light"
               : "bg-cta-light text-cta-dark"
           }  hover:bg-cta-dark/20 hover:text-cta-dark font-medium shadow-md flex justify-center items-center gap-2`}
@@ -53,9 +42,15 @@ const Explore = () => {
           <span>Trending</span>
         </button>
       </div>
-      {latestPosts?.map((post) => (
-        <PostCard key={post.postId} postInfo={post} />
-      ))}
+      {explorePostsLoading &&
+        [...Array(10)].map((_, id) => (
+          <PostSkeleton key={id} textOnly={id % 2 === 0} />
+        ))}
+      {!explorePostsLoading && explorePosts.length > 0
+        ? sortedPosts.map((post) => (
+            <PostCard key={post.postId} postInfo={post} />
+          ))
+        : "No Posts On the Wall"}
     </div>
   );
 };
