@@ -207,7 +207,7 @@ const userSlice = createSlice({
     );
     builder.addCase(fetchSinglePost.rejected, (state, { payload }) => {
       state.singlePostLoading = false;
-      toast.error(payload);
+      state.singlePostError = payload;
       state.singlePost.uid = "";
       state.singlePost.comments = [];
       state.singlePost.createdAt = "";
@@ -288,7 +288,9 @@ const userSlice = createSlice({
           : state.suggestions.filter((person) => person.uid !== personId);
       }
     );
+
     builder.addCase(logoutUser, (state) => {
+      state.loggedUser.userLoading = false;
       state.loggedUser.validUser = true;
       state.loggedUser.bookmarks = [];
       state.loggedUser.uid = "";

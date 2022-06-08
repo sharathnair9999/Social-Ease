@@ -87,7 +87,11 @@ const UserProfile = () => {
             </span>
             {!userInfo.error && uid !== profileId && (
               <button
-                onClick={() => dispatch(followHandler(profileId))}
+                onClick={() =>
+                  dispatch(
+                    followHandler({ personId: profileId, user: userInfo })
+                  )
+                }
                 className={`mr-auto ml-2 text-md rounded-lg font-medium ${
                   isFollowing
                     ? `bg-cta-light text-cta-dark`
