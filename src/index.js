@@ -5,7 +5,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { store } from "./app/store";
 import { SplashScreen } from "./pages";
 import "./index.css";
-// import App from "./App";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const LazyApp = React.lazy(() => import("./App"));
 root.render(
