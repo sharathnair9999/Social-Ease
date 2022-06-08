@@ -7,7 +7,7 @@ const Button = ({ children, ...args }) => {
       type={args.type}
       disabled={args.disabled}
       onTouchStart={args.onTouchStart}
-      className={`${args.className} font-bold md:text-xs text-xs  px-2 py-1 rounded-md relative top-0 hover:top-[-4px] hover:brightness-90 transition-all duration-200 shadow-xl`}
+      className={`${args.className} font-bold  px-2 py-1 rounded-md relative top-0 hover:top-[-4px] hover:brightness-90 transition-all duration-200 shadow-xl`}
     >
       {children}
     </button>
