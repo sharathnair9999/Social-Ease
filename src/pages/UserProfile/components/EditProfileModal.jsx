@@ -24,6 +24,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
     setShowModal(false);
   };
   const [file, setFile] = useState("");
+  const [coverFile, setCoverFile] = useState("");
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUsername = useCallback(
     debounce(
@@ -38,11 +39,12 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
     ),
     []
   );
-  const deletePhoto = async () => {
+  const deletePhoto = async (fieldName, replacer) => {
     await deleteFile(
-      ref(storage, userDetails.photoURL),
+      ref(storage, userDetails[fieldName]),
       setUserDetails,
-      "photoURL"
+      fieldName,
+      replacer
     );
   };
   const handleSubmit = (e) => {
@@ -53,21 +55,69 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
 
   useEffect(() => {
     if (file) {
+      console.log("uploading dp");
       uploadFile(file, setIsValid, setUserDetails, true, "photoURL");
       setFile("");
     }
   }, [file]);
+  useEffect(() => {
+    if (coverFile) {
+      console.log("uploading cover");
+      uploadFile(coverFile, setIsValid, setUserDetails, true, "coverPhoto");
+      setCoverFile("");
+    }
+  }, [coverFile]);
 
   useEffect(() => {
     setUserDetails(userInfo);
   }, [userInfo]);
 
+  console.log(userDetails);
+
   return (
     <form
-      className="md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-[30rem] md:h-3/4 rounded-md shadow-xl flex justify-center items-center flex-col gap-2 z-20"
+      className="relative md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-[30rem] md:h-3/4 rounded-md shadow-xl flex justify-center items-center flex-col gap-2 z-20"
       onSubmit={handleSubmit}
     >
-      <section className="relative">
+      <img
+        className="absolute w-full rounded-t-md top-0 opacity-80 h-28 object-cover -left-0 -z-10"
+        src={
+          userDetails.coverPhoto
+            ? userDetails.coverPhoto
+            : constants.imgUrls.userCoverPlaceholder
+        }
+        alt={"cover"}
+      />
+      {userDetails.coverPhoto?.length > 0 && (
+        <button
+          type="button"
+          className="absolute top-20 right-14 text-red-500 bg-slate-100 fle justify-center items-center rounded-full p-1 text-lg"
+          onClick={() => {
+            deletePhoto("coverPhoto", constants.imgUrls.userCoverPlaceholder);
+            setCoverFile("");
+          }}
+        >
+          <AiFillDelete size={"1.2rem"} />
+        </button>
+      )}
+      <span className=" absolute  top-20 right-2 ">
+        <input
+          type="file"
+          name="coverFile"
+          id="coverFile"
+          accept="image/x-png,image/gif,image/jpeg"
+          className=" absolute overflow-hidden hidden z-[-1]"
+          onChange={(e) => setCoverFile(e.target.files[0])}
+        />
+        <label
+          htmlFor="coverFile"
+          className="bg-slate-100 p-1 flex justify-center items-center rounded-full object-cover cursor-pointer hover:bg-slate-200 transition"
+        >
+          <FiUpload size={"1rem"} />
+        </label>
+      </span>
+
+      <section className="relative mt-10">
         <img
           src={userDetails.photoURL}
           alt={userDetails.displayName}
@@ -78,7 +128,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
             type="button"
             className="absolute top-0 right-[-5px] text-red-500 text-md"
             onClick={() => {
-              deletePhoto();
+              deletePhoto("photoURL", constants.imgUrls.userPlaceholder);
               setFile("");
             }}
           >

@@ -45,7 +45,7 @@ const UserProfile = () => {
       {userInfo.validUser === "" ? (
         "Loading " // will add skeletal loading while refactor
       ) : (
-        <div className="flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
+        <div className="relative flex juustify-start items-start flex-col w-full shadow-md p-2 rounded-md">
           {userInfo.uid === profileId && (
             <Modal showModal={showModal}>
               <EditProfileModal
@@ -55,9 +55,18 @@ const UserProfile = () => {
             </Modal>
           )}
           <img
+            className="absolute w-full h-40 object-cover -left-0 -z-10"
+            src={
+              userInfo.coverPhoto
+                ? userInfo.coverPhoto
+                : constants.imgUrls.userCoverPlaceholder
+            }
+            alt={"cover"}
+          />
+          <img
             className={`md:w-32 ${
               !userInfo?.photoURL ? "rounded-lg" : "rounded-full"
-            } md:h-32 w-24 h-24  mx-auto mb-2 object-cover `}
+            } md:h-32 w-24 h-24  mx-auto mb-2 object-cover mt-14`}
             src={
               userInfo?.photoURL
                 ? userInfo.photoURL

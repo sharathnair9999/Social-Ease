@@ -8,14 +8,18 @@ import { toast } from "react-toastify";
 import { storage } from "../firebase-config";
 import { constants } from "./constants";
 
-export const deleteFile = async (file, stateSetter, fieldName) => {
+export const deleteFile = async (
+  file,
+  stateSetter,
+  fieldName,
+  replacerFile
+) => {
   try {
     const storageRef = ref(storage, file);
     await deleteObject(storageRef);
     stateSetter((state) => ({
       ...state,
-      [fieldName]:
-        fieldName === "media" ? [] : constants.imgUrls.userPlaceholder,
+      [fieldName]: fieldName === "media" ? [] : replacerFile,
     }));
   } catch (error) {
     toast.error("Could not delete file");
