@@ -159,7 +159,7 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           <img
             src={media[0]}
             alt={postDescription}
-            className="w-auto py-2 max-h-96 "
+            className="w-auto py-2 max-h-[35rem] "
           />
         </Link>
       )}

@@ -24,8 +24,9 @@ const Feed = () => {
       <Modal showModal={showModal}>
         <PostEditor ref={ref} newPost setShowModal={setShowModal} />
       </Modal>
+
       <div className=" shadow-md border-[1px] flex flex-col mb-4">
-        <section className="flex items-center justify-start gap-4 px-2 py-4  rounded-md">
+        <section className="flex items-center justify-start gap-4 px-2 py-2  rounded-md">
           <Link to={`/profile/${uid}`} className="max-w-[3rem]">
             <img
               src={photoURL}
