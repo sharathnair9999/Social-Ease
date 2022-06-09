@@ -173,7 +173,7 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
             onClick={() => setOpenLikesModal(true)}
             className="hover:underline cursor-pointer "
           >
-            {`${likes?.length} Likes`}
+            {`${likes?.length} ${likes?.length > 1 ? "Likes" : "Like"}`}
           </span>
         </p>
       )}

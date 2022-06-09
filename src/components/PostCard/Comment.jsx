@@ -7,6 +7,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { AiFillEdit, AiOutlineSend, AiFillDelete } from "react-icons/ai";
 import { addComment, deleteComment, editComment } from "../../services";
 import { toast } from "react-toastify";
+import { constants } from "../../helpers";
 
 export const Comment = ({
   newComment,
@@ -20,6 +21,7 @@ export const Comment = ({
   const { uid, photoURL, displayName, isLoggedIn } = useSelector(
     (state) => state.auth
   );
+  console.log(isLoggedIn);
   const newCommentState = {
     commentText: "",
     likes: [],
@@ -39,6 +41,8 @@ export const Comment = ({
     if (!isLoggedIn) {
       toast.error("Please login to continue");
       navigate("/login");
+      setComment(newCommentState);
+      return;
     }
     if (newComment) {
       dispatch(addComment({ postId, comment, comments }));
@@ -77,11 +81,24 @@ export const Comment = ({
           newComment ? `/profile/${uid}` : `/profile/${commentedUserInfo.uid}`
         }
       >
-        <img
-          className="w-10 h-10 rounded-full mb-auto object-cover "
-          src={newComment ? photoURL : commentedUserInfo.photoURL}
-          alt={newComment ? displayName : commentedUserInfo.displayName}
-        />
+        {isLoggedIn && (
+          <img
+            className="w-10 h-10 rounded-full mb-auto object-cover "
+            src={newComment ? photoURL : commentedUserInfo.photoURL}
+            alt={newComment ? displayName : commentedUserInfo.displayName}
+          />
+        )}
+        {!isLoggedIn && (
+          <img
+            className="w-10 h-10 rounded-full mb-auto object-cover "
+            src={
+              newComment
+                ? constants.imgUrls.userPlaceholder
+                : commentedUserInfo.photoURL
+            }
+            alt={newComment && "comment"}
+          />
+        )}
       </Link>
       {newComment || isEditing ? (
         <>
@@ -97,7 +114,7 @@ export const Comment = ({
         </>
       ) : (
         <section className="flex-col flex justify-start  max-w-[80%]  flex-grow px-2 py-1 rounded-md bg-slate-50">
-          <p className="text-xs font-semibold">
+          <p className="text-sm font-semibold">
             {commentedUserInfo.displayName}
           </p>
           <p className="text-sm font-normal ">{comment.commentText}</p>
