@@ -86,7 +86,7 @@ const postSlice = createSlice({
       state.explorePostsLoading = false;
     });
     builder.addCase(fetchExplorePosts.rejected, (state, { payload }) => {
-      state.explorePostsError = payload;
+      toast.error(payload);
       state.explorePostsLoading = false;
     });
     // Fetching a user's posts
@@ -259,6 +259,9 @@ const postSlice = createSlice({
     });
     builder.addCase(followHandler.fulfilled, (state, { payload: { uid } }) => {
       state.feedPosts = state.feedPosts.filter((post) => post.uid === uid);
+    });
+    builder.addCase(followHandler.rejected, (_, { payload }) => {
+      toast.error(payload);
     });
   },
 });

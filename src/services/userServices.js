@@ -238,11 +238,16 @@ export const followHandler = createAsyncThunk(
   async ({ personId, user }, { rejectWithValue, getState }) => {
     try {
       const {
-        auth: { uid },
+        auth: { uid, isLoggedIn },
         user: {
           loggedUser: { following },
         },
       } = getState();
+
+      if (!isLoggedIn) {
+        return rejectWithValue("Please Login to Proceed");
+      }
+
       const isFollowing = following.some((user) => user === personId);
 
       await updateDoc(doc(db, "users", uid), {

@@ -57,6 +57,11 @@ const Signup = () => {
     setFile("");
   };
 
+  const handleReset = async () => {
+    credentials.photoURL && (await deletePhoto());
+    setCredentials(initialCredentialState);
+  };
+
   return (
     <div className="h-[calc(100vh-8.3rem)] flex flex-col justify-start items-start md:flex-row ">
       <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
@@ -69,7 +74,7 @@ const Signup = () => {
             <img
               src={credentials.photoURL}
               alt="userlogo"
-              className=" w-[5rem] h-[5rem] p-1 rounded-full "
+              className=" w-[5rem] h-[5rem] p-1 rounded-full object-cover "
             />
             {credentials.photoURL !== initialDP && (
               <button
@@ -182,7 +187,7 @@ const Signup = () => {
             <Button
               className="bg-cta-light border-2 text-cta-dark"
               type="reset"
-              onClick={() => setCredentials(initialCredentialState)}
+              onClick={handleReset}
             >
               Reset
             </Button>

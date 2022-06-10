@@ -9,7 +9,7 @@ const People = () => {
     <div className="w-full flex flex-col gap-4">
       <p className="font-medium  underline underline-offset-2 text-lg">{`People You May Know`}</p>
       {suggestions
-        ?.filter((user) => uid && user.uid !== uid)
+        ?.filter((user) => (uid ? user.uid !== uid : user))
         .map((user) => (
           <PersonCard user={user} key={user.uid} />
         ))}

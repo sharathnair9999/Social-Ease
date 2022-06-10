@@ -63,13 +63,14 @@ export const fetchExplorePosts = createAsyncThunk(
         let id = explorePost.data().uid;
         const userRef = userDocQuerybyId(id);
         const userSnapshot = await getDoc(userRef);
-        explorePosts.push({
-          postId: explorePost.id,
-          displayName: userSnapshot.data().displayName,
-          photoURL: userSnapshot.data().photoURL,
-          username: userSnapshot.data().username,
-          ...explorePost.data(),
-        });
+        userSnapshot.data().displayName &&
+          explorePosts.push({
+            postId: explorePost.id,
+            displayName: userSnapshot.data().displayName,
+            photoURL: userSnapshot.data().photoURL,
+            username: userSnapshot.data().username,
+            ...explorePost.data(),
+          });
       }
       return explorePosts;
     } catch (error) {

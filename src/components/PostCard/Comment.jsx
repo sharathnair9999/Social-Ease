@@ -21,7 +21,6 @@ export const Comment = ({
   const { uid, photoURL, displayName, isLoggedIn } = useSelector(
     (state) => state.auth
   );
-  console.log(isLoggedIn);
   const newCommentState = {
     commentText: "",
     likes: [],
