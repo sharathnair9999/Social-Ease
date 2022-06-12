@@ -6,7 +6,11 @@ import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { getMonthYear, capitalize, constants } from "../../helpers";
-import { fetchUserInfo, followHandler } from "../../services";
+import {
+  fetchLoggedUserInfo,
+  fetchOtherUserInfo,
+  followHandler,
+} from "../../services";
 import ProfileSkeleton from "./components/ProfileSkeleton";
 
 const UserProfile = () => {
@@ -22,13 +26,16 @@ const UserProfile = () => {
   const userProfile = useSelector((state) => state.user);
   const userInfo =
     profileId === uid ? userProfile.loggedUser : userProfile.otherUser;
+  console.log(userInfo);
 
   const postsInfo = useSelector((state) => state.posts);
   const isFollowing = userInfo.followers.some((person) => person === uid);
 
   useEffect(() => {
-    dispatch(fetchUserInfo(profileId));
-  }, [dispatch, profileId]);
+    uid === profileId
+      ? dispatch(fetchLoggedUserInfo(profileId))
+      : dispatch(fetchOtherUserInfo(profileId));
+  }, [dispatch, profileId, uid]);
 
   const handleFollowersModal = () => {
     setShowPeopleModal(true);

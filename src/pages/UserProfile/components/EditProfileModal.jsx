@@ -49,6 +49,7 @@ const EditProfileModal = ({ setShowModal, userInfo }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(userDetails);
     dispatch(updateUserInfo(userDetails));
     setShowModal(false);
   };

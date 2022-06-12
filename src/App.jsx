@@ -26,8 +26,8 @@ import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import {
   fetchBookmarkedPosts,
+  fetchLoggedUserInfo,
   fetchSuggestions,
-  fetchUserInfo,
 } from "./services";
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
             username: userDetails?.username ?? email.split("@")[0],
           })
         );
-        dispatch(fetchUserInfo(uid));
+        uid && dispatch(fetchLoggedUserInfo(uid));
         dispatch(fetchBookmarkedPosts(uid));
       } else {
         dispatch(logoutUser());

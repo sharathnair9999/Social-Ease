@@ -55,40 +55,47 @@ export const fetchSuggestions = createAsyncThunk(
 
 // Fetching the user profile information
 
-export const fetchUserInfo = createAsyncThunk(
-  `user/fetchUserInfo`,
-  async (profileId, { rejectWithValue, getState }) => {
-    const {
-      auth: { uid },
-    } = getState();
+export const fetchLoggedUserInfo = createAsyncThunk(
+  `user/fetchLoggedUserInfo`,
+  async (profileId, { rejectWithValue }) => {
     try {
       const userSnap = await getDoc(userDocQuerybyId(profileId));
       if (!userSnap.exists()) {
         return rejectWithValue({ validUser: false });
       }
-      if (userSnap.id === uid) {
-        // returns every information about user
 
-        return { uid: userSnap.id, ...userSnap.data(), loggedUser: true };
-      } else {
-        // returns everything except bookmarks and likes of the user as the profile that we visited is not logged in user's profile
-        return {
-          uid: userSnap.id,
-          displayName: userSnap.data().displayName,
-          username: userSnap.data().username,
-          photoURL: userSnap.data().photoURL,
-          joinedAt: userSnap.data().joinedAt,
-          followers: userSnap.data().followers,
-          following: userSnap.data().following,
-          gender: userSnap.data().gender,
-          link: userSnap.data().link,
-          bio: userSnap.data().bio,
-          posts: userSnap.data().posts,
-          coverPhoto: userSnap.data().coverPhoto,
-          likedPosts: [],
-          loggedUser: false,
-        };
+      return { uid: userSnap.id, ...userSnap.data(), loggedUser: true };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const fetchOtherUserInfo = createAsyncThunk(
+  `user/fetchOtherUserInfo`,
+  async (profileId, { rejectWithValue }) => {
+    try {
+      const userSnap = await getDoc(userDocQuerybyId(profileId));
+      if (!userSnap.exists()) {
+        return rejectWithValue({ validUser: false });
       }
+
+      // returns everything except bookmarks and likes of the user as the profile that we visited is not logged in user's profile
+      return {
+        uid: userSnap.id,
+        displayName: userSnap.data().displayName,
+        username: userSnap.data().username,
+        photoURL: userSnap.data().photoURL,
+        joinedAt: userSnap.data().joinedAt,
+        followers: userSnap.data().followers,
+        following: userSnap.data().following,
+        gender: userSnap.data().gender,
+        link: userSnap.data().link,
+        bio: userSnap.data().bio,
+        posts: userSnap.data().posts,
+        coverPhoto: userSnap.data().coverPhoto,
+        likedPosts: [],
+        loggedUser: false,
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }

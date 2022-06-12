@@ -28,7 +28,8 @@ import {
 } from "./post-services";
 import {
   getUserDetails,
-  fetchUserInfo,
+  fetchLoggedUserInfo,
+  fetchOtherUserInfo,
   updateUserInfo,
   fetchUserLikedPosts,
   handleBookmark,
@@ -54,7 +55,8 @@ export {
   fetchFeedPosts,
   fetchExplorePosts,
   fetchUserPosts,
-  fetchUserInfo,
+  fetchLoggedUserInfo,
+  fetchOtherUserInfo,
   updateUserInfo,
   fetchUserLikedPosts,
   loginUser,

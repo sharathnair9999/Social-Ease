@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {
-  fetchUserInfo,
   handleLike,
   updateUserInfo,
   fetchUserLikedPosts,
@@ -12,6 +11,8 @@ import {
   editComment,
   followHandler,
   fetchSuggestions,
+  fetchLoggedUserInfo,
+  fetchOtherUserInfo,
 } from "../../services";
 import { logoutUser } from "../Auth/authSlice";
 
@@ -88,51 +89,56 @@ const userSlice = createSlice({
       toast.error(payload);
     });
 
-    builder.addCase(fetchUserInfo.pending, (state) => {
+    builder.addCase(fetchLoggedUserInfo.pending, (state) => {
       state.loggedUser.userLoading = true;
+    });
+    builder.addCase(fetchOtherUserInfo.pending, (state) => {
       state.otherUser.userLoading = true;
     });
 
-    builder.addCase(fetchUserInfo.fulfilled, (state, { payload }) => {
-      if (payload.loggedUser) {
-        state.loggedUser.userLoading = false;
-        state.loggedUser.validUser = true;
-        state.loggedUser.bookmarks = payload.bookmarks;
-        state.loggedUser.uid = payload.uid;
-        state.loggedUser.likedPosts = payload.likedPosts;
-        state.loggedUser.followers = payload.followers;
-        state.loggedUser.following = payload.following;
-        state.loggedUser.joinedAt = payload.joinedAt;
-        state.loggedUser.bio = payload.bio;
-        state.loggedUser.link = payload.link;
-        state.loggedUser.displayName = payload.displayName;
-        state.loggedUser.photoURL = payload.photoURL;
-        state.loggedUser.username = payload.username;
-        state.loggedUser.posts = payload.posts;
-        state.loggedUser.coverPhoto = payload.coverPhoto;
-      } else {
-        state.otherUser.userLoading = false;
-        state.otherUser.validUser = true;
-        state.otherUser.coverPhoto = payload.coverPhoto;
-        state.otherUser.uid = payload.uid;
-        state.otherUser.likedPosts = payload.likedPosts;
-        state.otherUser.followers = payload.followers;
-        state.otherUser.following = payload.following;
-        state.otherUser.joinedAt = payload.joinedAt;
-        state.otherUser.bio = payload.bio;
-        state.otherUser.link = payload.link;
-        state.otherUser.displayName = payload.displayName;
-        state.otherUser.photoURL = payload.photoURL;
-        state.otherUser.username = payload.username;
-        state.otherUser.posts = payload.posts;
-      }
-    });
-    builder.addCase(fetchUserInfo.rejected, (state, { payload }) => {
-      state.loggedUser.validUser = false;
-      state.otherUser.userLoading = false;
+    builder.addCase(fetchLoggedUserInfo.fulfilled, (state, { payload }) => {
       state.loggedUser.userLoading = false;
-      state.otherUser.validUser = false;
+      state.loggedUser.validUser = true;
+      state.loggedUser.bookmarks = payload.bookmarks;
+      state.loggedUser.uid = payload.uid;
+      state.loggedUser.likedPosts = payload.likedPosts;
+      state.loggedUser.followers = payload.followers;
+      state.loggedUser.following = payload.following;
+      state.loggedUser.joinedAt = payload.joinedAt;
+      state.loggedUser.bio = payload.bio;
+      state.loggedUser.link = payload.link;
+      state.loggedUser.displayName = payload.displayName;
+      state.loggedUser.photoURL = payload.photoURL;
+      state.loggedUser.username = payload.username;
+      state.loggedUser.posts = payload.posts;
+      state.loggedUser.coverPhoto = payload.coverPhoto;
+    });
+    builder.addCase(fetchOtherUserInfo.fulfilled, (state, { payload }) => {
+      state.otherUser.userLoading = false;
+      state.otherUser.validUser = true;
+      state.otherUser.coverPhoto = payload.coverPhoto;
+      state.otherUser.uid = payload.uid;
+      state.otherUser.likedPosts = payload.likedPosts;
+      state.otherUser.followers = payload.followers;
+      state.otherUser.following = payload.following;
+      state.otherUser.joinedAt = payload.joinedAt;
+      state.otherUser.bio = payload.bio;
+      state.otherUser.link = payload.link;
+      state.otherUser.displayName = payload.displayName;
+      state.otherUser.photoURL = payload.photoURL;
+      state.otherUser.username = payload.username;
+      state.otherUser.posts = payload.posts;
+    });
+    builder.addCase(fetchLoggedUserInfo.rejected, (state, { payload }) => {
+      state.loggedUser.validUser = false;
+      state.loggedUser.userLoading = false;
+      toast.error(payload);
       state.loggedUser.error = payload;
+    });
+    builder.addCase(fetchOtherUserInfo.rejected, (state, { payload }) => {
+      state.otherUser.userLoading = false;
+      state.otherUser.validUser = false;
+      toast.error(payload);
       state.otherUser.error = payload;
     });
 
