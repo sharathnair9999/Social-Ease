@@ -79,6 +79,10 @@ const userExists = async (text) => {
 
 export const signupUser = async (e, navigate, { ...details }) => {
   e.preventDefault();
+  if (!details.gender || details.gender === "Select") {
+    toast.error("Please Specift Your Gender Preference");
+    return;
+  }
   const {
     user: {
       auth: { currentUser },

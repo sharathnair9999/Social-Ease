@@ -17,15 +17,19 @@ const LikedPosts = () => {
   return (
     <div className="w-full">
       {likedPostsError && likedPostsError}
-      {likedPostsLoading
-        ? [...Array(10)].map((_, id) => (
-            <PostSkeleton key={id} textOnly={id % 2 === 0} />
-          ))
-        : likedPosts?.length > 0
-        ? likedPosts?.map((post) => (
-            <PostCard key={post.postId} postInfo={post} />
-          ))
-        : "You havent liked any posts till now"}
+      {likedPostsLoading ? (
+        [...Array(10)].map((_, id) => (
+          <PostSkeleton key={id} textOnly={id % 2 === 0} />
+        ))
+      ) : likedPosts?.length > 0 ? (
+        likedPosts?.map((post) => (
+          <PostCard key={post.postId} postInfo={post} />
+        ))
+      ) : (
+        <p className="my-4 w-full text-center text-2xl font-bold">
+          You haven't Liked Any Posts
+        </p>
+      )}
     </div>
   );
 };

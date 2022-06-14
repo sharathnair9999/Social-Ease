@@ -41,7 +41,7 @@ const Feed = () => {
             />
           </Link>
           <input
-            className="font-light border-none outline-none w-1/2"
+            className="font-light border-none outline-none w-full"
             value={"What's on your mind?"}
             readOnly
             onClick={() => setShowModal(true)}
@@ -50,7 +50,7 @@ const Feed = () => {
             onClick={() => setShowModal(true)}
             className="bg-cta-dark text-white ml-auto "
           >
-            New Post
+            Post
           </Button>
         </section>
       </div>
@@ -58,11 +58,13 @@ const Feed = () => {
         [...Array(10)].map((_, id) => (
           <PostSkeleton key={id} textOnly={id % 2 === 0} />
         ))}
-      {feedPosts.length === 0
-        ? "Seems like you dont follow anyone"
-        : feedPosts.map((post) => (
-            <PostCard key={post.postId} postInfo={post} />
-          ))}
+      {feedPosts.length === 0 ? (
+        <p className="w-full text-center text-2xl font-bold">
+          Seems like you dont follow anyone
+        </p>
+      ) : (
+        feedPosts.map((post) => <PostCard key={post.postId} postInfo={post} />)
+      )}
     </div>
   );
 };

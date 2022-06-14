@@ -16,15 +16,19 @@ const Bookmarks = () => {
   return (
     <div className="w-full">
       {bookmarkPostsError && bookmarkPostsError}
-      {bookmarkPostsLoading
-        ? [...Array(5)].map((_, id) => (
-            <PostSkeleton key={id} textOnly={id % 2 === 0} />
-          ))
-        : bookmarkPosts.length > 0
-        ? bookmarkPosts.map((post) => (
-            <PostCard key={post.postId} postInfo={post} bookmarkPost />
-          ))
-        : "You havent bookmarked anything"}
+      {bookmarkPostsLoading ? (
+        [...Array(5)].map((_, id) => (
+          <PostSkeleton key={id} textOnly={id % 2 === 0} />
+        ))
+      ) : bookmarkPosts.length > 0 ? (
+        bookmarkPosts.map((post) => (
+          <PostCard key={post.postId} postInfo={post} bookmarkPost />
+        ))
+      ) : (
+        <p className="my-4 w-full text-center text-2xl font-bold">
+          You haven't bookmarked anything
+        </p>
+      )}
     </div>
   );
 };
