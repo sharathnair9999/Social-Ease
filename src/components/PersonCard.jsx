@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { followHandler } from "../services";
 import Button from "./Button";
 
-const PersonCard = ({ user }) => {
+const PersonCard = ({ user, small }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { displayName, photoURL, uid, username } = user;
@@ -19,7 +19,7 @@ const PersonCard = ({ user }) => {
         <img
           src={photoURL}
           alt={displayName}
-          className="w-10 h-10 rounded-full object-cover"
+          className="w-10 h-10 min-w-[2.5rem] rounded-full object-cover"
         />
       </Link>
       <section className="flex justify-start items-start gap-0 flex-col">
@@ -27,7 +27,13 @@ const PersonCard = ({ user }) => {
           {" "}
           <p className="text-md font-medium">{displayName}</p>
         </Link>
-        <p className="text-sm font-normal">{`@${username}`}</p>
+        <p className="text-sm font-normal">{`@${
+          small
+            ? username.length > 15
+              ? `${username.slice(0, 18)}...`
+              : username
+            : username
+        }`}</p>
       </section>
       {auth.uid !== uid && (
         <Button
