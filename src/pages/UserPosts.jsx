@@ -17,15 +17,17 @@ const UserPosts = () => {
   return (
     <div className="w-full">
       {userPostsError && "Error"}
-      {userPostsLoading
-        ? [...Array(10)].map((_, id) => (
-            <PostSkeleton key={id} textOnly={id % 2 === 0} />
-          ))
-        : userPosts.length > 0
-        ? userPosts.map((post) => (
-            <PostCard key={post.postId} postInfo={post} />
-          ))
-        : "No Posts Till Now"}
+      {userPostsLoading ? (
+        [...Array(10)].map((_, id) => (
+          <PostSkeleton key={id} textOnly={id % 2 === 0} />
+        ))
+      ) : userPosts.length > 0 ? (
+        userPosts.map((post) => <PostCard key={post.postId} postInfo={post} />)
+      ) : (
+        <p className="my-4 w-full text-center text-2xl font-bold">
+          No Posts Till Now
+        </p>
+      )}
     </div>
   );
 };
