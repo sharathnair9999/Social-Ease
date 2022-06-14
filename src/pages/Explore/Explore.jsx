@@ -5,13 +5,14 @@ import { fetchExplorePosts } from "../../services";
 import { BsGraphUp } from "react-icons/bs";
 import { MdDateRange } from "react-icons/md";
 import { sortPosts } from "../../helpers";
+import { IoIosArrowUp } from "react-icons/io";
 
 const Explore = () => {
   const { explorePosts, explorePostsLoading } = useSelector(
     (state) => state.posts
   );
   const dispatch = useDispatch();
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState("LATEST");
   const sortedPosts = sortPosts(explorePosts, sortBy);
   useEffect(() => {
     dispatch(fetchExplorePosts());
@@ -20,15 +21,18 @@ const Explore = () => {
     <div>
       <div className="flex justify-end items-center gap-4 sticky bg-white w-full top-14 px-1 py-2">
         <button
-          onClick={() => setSortBy("LATEST")}
+          onClick={() =>
+            sortBy === "LATEST" ? setSortBy("OLDEST") : setSortBy("LATEST")
+          }
           className={`px-2 py-1 rounded-md text-xs ${
-            sortBy === "LATEST"
+            sortBy === "LATEST" || sortBy === "OLDEST"
               ? "bg-cta-dark text-cta-light"
               : "bg-cta-light text-cta-dark"
           }  hover:bg-cta-dark/20 hover:text-cta-dark font-medium  shadow-md flex justify-center items-center gap-2`}
         >
           <MdDateRange />
-          <span> Latest</span>
+          <span> {sortBy === "LATEST" ? "Oldest" : "Latest"}</span>
+          <IoIosArrowUp />
         </button>
         <button
           onClick={() => setSortBy("TRENDING")}
