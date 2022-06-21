@@ -67,7 +67,10 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           />
         </Link>
         <section className="flex justify-start items-start gap-0 flex-col">
-          <p className="text-md font-medium">{`${displayName}`}</p>
+          <p
+            onClick={() => navigate(`/profile/${uid}`)}
+            className="text-md font-medium cursor-pointer  "
+          >{`${displayName}`}</p>
           <p className="text-sm font-normal">{`@${username}`}</p>
           <p className="text-xs font-light">
             {getReadableDate(createdAt?.seconds)}

@@ -131,7 +131,7 @@ const Signup = () => {
             isValidUsername={isValidUsername}
             type="text"
             name="username"
-            pattern="^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"
+            // pattern="^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"
             title="Invalid username format"
             value={credentials.username}
             className={`${
