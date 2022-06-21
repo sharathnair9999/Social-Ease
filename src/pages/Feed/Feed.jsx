@@ -25,6 +25,12 @@ const Feed = () => {
     following.length > 0 && dispatch(fetchFeedPosts(following));
   }, [dispatch, uid, following]);
 
+  const filteredFeedPosts =
+    feedPosts &&
+    [...feedPosts]
+      .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
+      .filter((post) => following.some((user) => user === post.uid));
+
   return (
     <div>
       <Modal showModal={showModal}>
@@ -58,12 +64,14 @@ const Feed = () => {
         [...Array(10)].map((_, id) => (
           <PostSkeleton key={id} textOnly={id % 2 === 0} />
         ))}
-      {feedPosts.length === 0 ? (
+      {filteredFeedPosts.length === 0 ? (
         <p className="w-full text-center text-2xl font-bold">
           Seems like you dont follow anyone
         </p>
       ) : (
-        feedPosts.map((post) => <PostCard key={post.postId} postInfo={post} />)
+        filteredFeedPosts.map((post) => (
+          <PostCard key={post.postId} postInfo={post} />
+        ))
       )}
     </div>
   );
