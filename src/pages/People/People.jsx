@@ -10,6 +10,7 @@ const People = () => {
       <p className="font-medium  underline underline-offset-2 text-lg">{`People You May Know`}</p>
       {suggestions
         ?.filter((user) => (uid ? user.uid !== uid : user))
+        .sort((a, b) => b.joinedAt.seconds - a.joinedAt.seconds)
         .map((user) => (
           <PersonCard user={user} key={user.uid} />
         ))}

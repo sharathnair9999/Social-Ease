@@ -162,6 +162,7 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           <img
             src={media[0]}
             alt={postDescription}
+            loading="lazy"
             className="w-auto py-2 max-h-[35rem] "
           />
         </Link>

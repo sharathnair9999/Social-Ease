@@ -25,9 +25,11 @@ const Login = () => {
       <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
         <Brand full />
         <form
-          onSubmit={(e) =>
-            loginUser(e, credentials.email, credentials.password)
-          }
+          onSubmit={(e) => {
+            e.preventDefault();
+
+            loginUser(credentials.email, credentials.password);
+          }}
           className="flex justify-center items-center gap-2 flex-col w-full mb-auto md:my-auto"
         >
           <section className="font-light text-2xl flex justify-center items-center gap-4">
@@ -62,9 +64,27 @@ const Login = () => {
             value={credentials.password}
             onChange={(e) => handleChange(e, setCredentials)}
           />
-          <Button type="submit" className="text-white bg-cta-dark font-bold">
-            Login
-          </Button>
+          <section className="flex justify-center items-center gap-4">
+            <Button type="submit" className="text-white bg-cta-dark font-bold">
+              Login
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setCredentials({
+                  email: process.env.REACT_APP_TESTER_EMAIL,
+                  password: process.env.REACT_APP_TESTER_PASSWORD,
+                });
+                loginUser(
+                  process.env.REACT_APP_TESTER_EMAIL,
+                  process.env.REACT_APP_TESTER_PASSWORD
+                );
+              }}
+              className="text-cta-dark bg-cta-light font-bold"
+            >
+              Guest Login
+            </Button>
+          </section>
         </form>
       </div>
       <div className="font-montserrat w-full  bg-accent-2 h-full p-4 flex flex-col justify-center gap-4 items-center text-light-1">

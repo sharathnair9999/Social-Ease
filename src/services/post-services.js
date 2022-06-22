@@ -23,15 +23,9 @@ import { v4 as uuid } from "uuid";
 
 export const fetchFeedPosts = createAsyncThunk(
   "posts/fetchFeedPosts",
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const {
-        user: {
-          loggedUser: { following },
-        },
-        auth: { uid },
-      } = getState();
-      const query = feedPostsQuery(following, uid);
+      const query = feedPostsQuery();
       let feedPosts = [];
       const feedPostsSnapShot = await getDocs(query);
       for await (const feedPost of feedPostsSnapShot.docs) {

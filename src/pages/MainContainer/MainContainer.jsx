@@ -16,10 +16,7 @@ const MainContainer = ({ children }) => {
   const [showModal, setShowModal] = useState(false);
   const ref = useRef();
   useEffect(() => {
-    (pathname.includes("/post") ||
-      pathname.includes("/profile") ||
-      pathname.includes("/people")) &&
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname]);
 
   return (

@@ -26,7 +26,6 @@ const UserProfile = () => {
   const userProfile = useSelector((state) => state.user);
   const userInfo =
     profileId === uid ? userProfile.loggedUser : userProfile.otherUser;
-  console.log(userInfo);
 
   const postsInfo = useSelector((state) => state.posts);
   const isFollowing = userInfo.followers.some((person) => person === uid);

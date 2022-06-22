@@ -79,47 +79,55 @@ const userExists = async (text) => {
 
 export const signupUser = async (e, navigate, { ...details }) => {
   e.preventDefault();
-  if (!details.gender || details.gender === "Select") {
-    toast.error("Please Specift Your Gender Preference");
-    return;
-  }
-  const {
-    user: {
-      auth: { currentUser },
-    },
-  } = await createUserWithEmailAndPassword(
-    auth,
-    details.email,
-    details.password
-  );
-  await updateProfile(currentUser, {
-    displayName: details.displayName,
-    photoURL: details.photoURL,
-  });
+  try {
+    if (!details.gender || details.gender === "Select") {
+      toast.error("Please Specify Your Gender Preference");
+      return;
+    }
+    if (details.username.length < 6) {
+      toast.error("Username must be atleast of 6 characters");
+      return;
+    }
 
-  await setDoc(doc(db, "users", currentUser.uid), {
-    displayName: details.displayName,
-    photoURL: details.photoURL,
-    gender: details.gender,
-    username: details.username,
-    posts: [],
-    coverPhoto: "",
-    followers: [],
-    following: [],
-    likedPosts: [],
-    bookmarks: [],
-    bio: "",
-    link: "",
-    joinedAt: serverTimestamp(),
-  });
-  toast.success(
-    `Welcome to SocialEase Fam, ${capitalize(details.displayName)}`
-  );
-  navigate("/login");
+    const {
+      user: {
+        auth: { currentUser },
+      },
+    } = await createUserWithEmailAndPassword(
+      auth,
+      details.email,
+      details.password
+    );
+    await updateProfile(currentUser, {
+      displayName: details.displayName,
+      photoURL: details.photoURL,
+    });
+
+    await setDoc(doc(db, "users", currentUser.uid), {
+      displayName: details.displayName,
+      photoURL: details.photoURL,
+      gender: details.gender,
+      username: details.username,
+      posts: [],
+      coverPhoto: "",
+      followers: [],
+      following: [],
+      likedPosts: [],
+      bookmarks: [],
+      bio: "",
+      link: "",
+      joinedAt: serverTimestamp(),
+    });
+    toast.success(
+      `Welcome to SocialEase Fam, ${capitalize(details.displayName)}`
+    );
+    navigate("/login");
+  } catch (error) {
+    toast.error(error.message);
+  }
 };
 
-export const loginUser = async (e, enteredEmail, password) => {
-  e.preventDefault();
+export const loginUser = async (enteredEmail, password) => {
   try {
     const {
       user: { displayName },
