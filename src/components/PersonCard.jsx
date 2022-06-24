@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { followHandler } from "../services";
 import Button from "./Button";
 
-const PersonCard = ({ user, small }) => {
+const PersonCard = ({ user, small, setShowModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { displayName, photoURL, uid, username } = user;
@@ -15,7 +15,7 @@ const PersonCard = ({ user, small }) => {
   const isFollowing = following.some((person) => person === uid);
   return (
     <div className="flex justify-start items-center gap-2 w-full shadow-md p-1">
-      <Link to={`/profile/${uid}`}>
+      <Link to={`/profile/${uid}`} onClick={() => setShowModal?.(false)}>
         <img
           src={photoURL}
           alt={displayName}
@@ -37,11 +37,11 @@ const PersonCard = ({ user, small }) => {
       </section>
       {auth.uid !== uid && (
         <Button
-          onClick={() =>
+          onClick={() => {
             auth.isLoggedIn
               ? dispatch(followHandler({ personId: uid, user }))
-              : navigate("/login")
-          }
+              : navigate("/login");
+          }}
           className={`ml-auto 
         text-sm ${isFollowing ? "bg-cta-dark text-white" : " text-cta-dark"} `}
         >

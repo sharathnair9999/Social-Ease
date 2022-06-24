@@ -1,4 +1,3 @@
-import SearchBar from "./Searchbar/SearchBar";
 import SideNav from "./SideNav/SideNav";
 import TopNav from "./TopNav/TopNav";
 import FollowMore from "./FollowMore/FollowMore";
@@ -15,7 +14,6 @@ import Input from "./Input";
 import PostSkeleton from "./PostSkeleton";
 
 export {
-  SearchBar,
   SideNav,
   TopNav,
   FollowMore,

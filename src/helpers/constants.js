@@ -14,7 +14,7 @@ export const constants = {
     linkedinLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-linkedin-2-48_smjbd0.png`,
     twitterLogo: `${storageURL}/v1653755115/${storageFolder}/icons8-twitter-48_ukzjgp.png`,
     invalidUser: `${storageURL}/v1654159858/${storageFolder}/user-invalid-icon_oyylty.png`,
-    userCoverPlaceholder: `https://via.placeholder.com/468x60?text=No`,
+    userCoverPlaceholder: `https://via.placeholder.com/468x60?text=.`,
   },
 };
 
