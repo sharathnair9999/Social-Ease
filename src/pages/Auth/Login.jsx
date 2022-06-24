@@ -21,91 +21,91 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-8.3rem)] flex flex-col justify-start items-start md:flex-row  ">
-      <div className="w-full  p-4 bg-light-1 h-full  flex flex-col justify-start  items-start ">
-        <Brand full />
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
+    <div className="w-full  p-4 bg-light-1 h-screen  flex flex-col justify-start  items-start ">
+      <Brand logo />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
 
-            loginUser(credentials.email, credentials.password);
-          }}
-          className="flex justify-center items-center gap-2 flex-col w-full mb-auto md:my-auto"
+          loginUser(credentials.email, credentials.password);
+        }}
+        className="flex justify-center items-center gap-2 flex-col w-full mb-auto "
+      >
+        <section className="font-light text-2xl flex justify-center items-center gap-4">
+          Sign In Using
+        </section>
+        <button
+          type="button"
+          className="flex justify-center items-center gap-2 w-10 h-10 rounded-full bg-white  text-sm"
+          onClick={loginWithGoogle}
         >
-          <section className="font-light text-2xl flex justify-center items-center gap-4">
-            Sign In to <Brand logo />
-          </section>
-          <button
+          <FcGoogle size={"1.1rem"} />
+        </button>
+        <section className="relative w-full flex items-center justify-center">
+          <hr className="w-1/2 border-1 border-accent-1-light my-2" />
+          <span className="absolute top-[-5px] left-auto right-auto bg-light-1 px-2 font-light">
+            OR
+          </span>
+        </section>
+        <Input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={credentials.email}
+          required
+          onChange={(e) => handleChange(e, setCredentials)}
+        />
+        <Input
+          required
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={credentials.password}
+          onChange={(e) => handleChange(e, setCredentials)}
+        />
+        <section className="flex justify-center items-center gap-4 mt-2">
+          <Button type="submit" className="text-white bg-cta-dark font-bold">
+            Login
+          </Button>
+          <Button
             type="button"
-            className="flex justify-center items-center gap-2 w-10 h-10 rounded-full bg-white  text-sm"
-            onClick={loginWithGoogle}
+            onClick={() => {
+              setCredentials({
+                email: process.env.REACT_APP_TESTER_EMAIL,
+                password: process.env.REACT_APP_TESTER_PASSWORD,
+              });
+              loginUser(
+                process.env.REACT_APP_TESTER_EMAIL,
+                process.env.REACT_APP_TESTER_PASSWORD
+              );
+            }}
+            className="text-cta-dark bg-cta-light font-bold"
           >
-            <FcGoogle size={"1.1rem"} />
-          </button>
-          <section className="relative w-full flex items-center justify-center">
-            <hr className="w-1/2 border-1 border-accent-1-light my-2" />
-            <span className="absolute top-[-5px] left-auto right-auto bg-light-1 px-2 font-light">
-              OR
+            Guest Login
+          </Button>
+        </section>
+        <div className="w-full h-[1px] bg-cta-dark/10 mt-10"></div>
+        <div className="flex flex-col justify-center items-center gap-4">
+          <h1 className="text-xl font-bold italic ">New Here?</h1>
+          <p className="font-extrabold text-3xl  gap-x-4">
+            <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
+              Socialize{" "}
             </span>
-          </section>
-          <Input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            value={credentials.email}
-            required
-            onChange={(e) => handleChange(e, setCredentials)}
-          />
-          <Input
-            required
-            type="password"
-            placeholder="******"
-            name="password"
-            value={credentials.password}
-            onChange={(e) => handleChange(e, setCredentials)}
-          />
-          <section className="flex justify-center items-center gap-4">
-            <Button type="submit" className="text-white bg-cta-dark font-bold">
-              Login
-            </Button>
-            <Button
-              type="button"
-              onClick={() => {
-                setCredentials({
-                  email: process.env.REACT_APP_TESTER_EMAIL,
-                  password: process.env.REACT_APP_TESTER_PASSWORD,
-                });
-                loginUser(
-                  process.env.REACT_APP_TESTER_EMAIL,
-                  process.env.REACT_APP_TESTER_PASSWORD
-                );
-              }}
-              className="text-cta-dark bg-cta-light font-bold"
-            >
-              Guest Login
-            </Button>
-          </section>
-        </form>
-      </div>
-      <div className="font-montserrat w-full  bg-accent-2 h-full p-4 flex flex-col justify-center gap-4 items-center text-light-1">
-        <h1 className="text-xl font-bold italic ">New Here?</h1>
-        <p className="font-extrabold text-3xl  gap-x-4">
-          <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
-            Socialize{" "}
-          </span>
-          with{" "}
-          <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
-            Ease{" "}
-          </span>
-          that you've had never before
-        </p>
-        <Button
-          onClick={() => navigate("/signup")}
-          className=" text-accent-2 bg-cta-light/90"
-        >
-          Sign Up
-        </Button>
-      </div>
+            with{" "}
+            <span className="bg-gradient-to-r bg-clip-text text-transparent from-cta-dark to-accent-1">
+              Ease{" "}
+            </span>
+            that you've had never before
+          </p>
+          <Button
+            type="button"
+            onClick={() => navigate("/signup")}
+            className=" text-accent-2 bg-cta-light/90"
+          >
+            Sign Up
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
