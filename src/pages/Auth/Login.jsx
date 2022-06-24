@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { handleChange } from "../../helpers";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
-import { Brand } from "../../components";
+import { Brand, Spinner } from "../../components";
 import { googleSignInHandler, loginUser } from "../../services";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "../../components";
@@ -20,14 +20,18 @@ const Login = () => {
     navigate("/feed");
   };
 
+  const [guestLoading, setGuestLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
+
   return (
     <div className="w-full  p-4 bg-light-1 h-screen  flex flex-col justify-start  items-start ">
       <Brand logo />
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-
-          loginUser(credentials.email, credentials.password);
+          setUserLoading(true);
+          await loginUser(credentials.email, credentials.password);
+          setUserLoading(false);
         }}
         className="flex justify-center items-center gap-2 flex-col w-full mb-auto "
       >
@@ -65,23 +69,27 @@ const Login = () => {
         />
         <section className="flex justify-center items-center gap-4 mt-2">
           <Button type="submit" className="text-white bg-cta-dark font-bold">
-            Login
+            {userLoading ? <Spinner isPrimary={true} /> : "Login"}
           </Button>
           <Button
             type="button"
-            onClick={() => {
+            disabled={guestLoading}
+            onClick={async () => {
               setCredentials({
                 email: process.env.REACT_APP_TESTER_EMAIL,
                 password: process.env.REACT_APP_TESTER_PASSWORD,
               });
-              loginUser(
+
+              setGuestLoading(true);
+              await loginUser(
                 process.env.REACT_APP_TESTER_EMAIL,
                 process.env.REACT_APP_TESTER_PASSWORD
               );
+              setGuestLoading(false);
             }}
             className="text-cta-dark bg-cta-light font-bold"
           >
-            Guest Login
+            {guestLoading ? <Spinner isPrimary={false} /> : "Guest Login"}
           </Button>
         </section>
         <div className="w-full h-[1px] bg-cta-dark/10 mt-10"></div>
