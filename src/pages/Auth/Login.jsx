@@ -68,7 +68,11 @@ const Login = () => {
           onChange={(e) => handleChange(e, setCredentials)}
         />
         <section className="flex justify-center items-center gap-4 mt-2">
-          <Button type="submit" className="text-white bg-cta-dark font-bold">
+          <Button
+            disabled={userLoading}
+            type="submit"
+            className="text-white bg-cta-dark font-bold"
+          >
             {userLoading ? <Spinner isPrimary={true} /> : "Login"}
           </Button>
           <Button
