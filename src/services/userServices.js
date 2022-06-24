@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { auth, db } from "../firebase-config";
+import { constants } from "../helpers";
 import {
   userDocQuerybyId,
   userLikedPostsQuery,
@@ -212,20 +213,23 @@ export const fetchBookmarkedPosts = createAsyncThunk(
       for await (const postId of bookmarkIds) {
         const bookmarkPostSnapshot = await getDoc(postByIdRef(postId));
         if (bookmarkPostSnapshot.exists()) {
+          const authorInfo = await getDoc(
+            userDocQuerybyId(bookmarkPostSnapshot.data().uid)
+          );
           bookmarkPosts.push({
             postId: bookmarkPostSnapshot.id,
-            displayName: userSnapshot.data().displayName,
-            photoURL: userSnapshot.data().photoURL,
-            username: userSnapshot.data().username,
+            displayName: authorInfo.data().displayName,
+            photoURL: authorInfo.data().photoURL,
+            username: authorInfo.data().username,
             ...bookmarkPostSnapshot.data(),
             postAvailable: true,
           });
         } else {
           bookmarkPosts.push({
             postId: bookmarkPostSnapshot.id,
-            displayName: userSnapshot.data().displayName,
-            photoURL: userSnapshot.data().photoURL,
-            username: userSnapshot.data().username,
+            displayName: "Unknown User",
+            photoURL: constants.imgUrls.userPlaceholder,
+            username: "unknown",
             ...bookmarkPostSnapshot.data(),
             postAvailable: false,
           });

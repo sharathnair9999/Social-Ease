@@ -101,8 +101,8 @@ const PostEditor = ({ newPost, existingPostInfo, setShowModal }) => {
           <button
             type="button"
             className="absolute top-0 right-0 text-red-500"
-            onClick={() => {
-              deleteFile(
+            onClick={async () => {
+              await deleteFile(
                 firestoreRef(storage, postDetails.media[0]),
                 setPostDetails,
                 "media"

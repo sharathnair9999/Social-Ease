@@ -6,7 +6,6 @@ import {
 } from "firebase/storage";
 import { toast } from "react-toastify";
 import { storage } from "../firebase-config";
-import { constants } from "./constants";
 
 export const deleteFile = async (
   file,

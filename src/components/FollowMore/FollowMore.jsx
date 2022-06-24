@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { constants } from "../../helpers";
 import PersonCard from "../PersonCard";
 
 const FollowMore = () => {
@@ -28,7 +29,11 @@ const FollowMore = () => {
       </div>
       <div className="follow-more w-full flex justify-start items-start gap-4 flex-col h-96 overflow-y-auto">
         {suggestions
-          .filter((user) => user.uid !== uid)
+          .filter(
+            (user) =>
+              user.uid !== uid &&
+              user.photoURL !== constants.imgUrls.userPlaceholder
+          )
           .slice(0, 4)
           ?.map((user) => (
             <PersonCard small key={user.uid} user={user} />
