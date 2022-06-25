@@ -187,7 +187,7 @@ const PostCard = ({ postInfo, enableComments, singlePost, bookmarkPost }) => {
           likes={likes}
           setShowComments={setShowComments}
         />
-        <span className="text-sm">{`${comments?.length} comments`}</span>
+        {comments && <span className="text-sm">{`${comments?.length} comments`}</span>}
       </span>
       {showModal && (
         <Modal showModal={showModal}>
