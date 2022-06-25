@@ -4,6 +4,7 @@ import { Modal, PeopleListModal } from "../../components";
 import EditProfileModal from "./components/EditProfileModal";
 import { AiFillEdit } from "react-icons/ai";
 import { BiLink } from "react-icons/bi";
+import { FaUserAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getMonthYear, capitalize, constants } from "../../helpers";
 import {
@@ -81,6 +82,14 @@ const UserProfile = () => {
             }
             alt={userInfo.displayName}
           />
+          {!userInfo.error &&
+            uid !== profileId &&
+            userProfile.otherUser.following.some((user) => user === uid) && (
+              <p className="flex justify-center items-center gap-1">
+                <FaUserAlt size={"13px"} color={"#373737"} />
+                <span className="text-sm">Follows You</span>
+              </p>
+            )}
           <p className="flex justify-between w-full items-end gap-4">
             <span
               className={`font-extrabold text-2xl ${
@@ -117,7 +126,7 @@ const UserProfile = () => {
             )}
           </p>
           {userInfo.displayName && (
-            <div className="w-full">
+            <div className="w-full mt-2">
               <section className="flex justify-start items-center gap-y-1  gap-x-4 flex-wrap ">
                 <span className="text-md ">{`@${userInfo.username}`}</span>
                 {userInfo.link && (
