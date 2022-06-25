@@ -79,14 +79,14 @@ const PostEditor = ({ newPost, existingPostInfo, setShowModal }) => {
 
   return (
     <form
-      className={`relative md:w-2/4 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
+      className={`relative md:w-1/2 w-full mx-2 bg-white/95 px-4 py-2 h-96 rounded-md shadow-xl flex justify-start items-start flex-col gap-2 z-20`}
       onSubmit={handlePost}
     >
       <textarea
         type="text"
         placeholder="What's on your mind?"
         name="postDescription"
-        className="border-none outline-none p-1 bg-transparent w-full"
+        className="border-none outline-none p-1 bg-transparent w-full resize-none h-20"
         value={postDetails.postDescription}
         onChange={(e) => handleChange(e, setPostDetails)}
         required
@@ -96,7 +96,7 @@ const PostEditor = ({ newPost, existingPostInfo, setShowModal }) => {
           <img
             src={postDetails.media[0]}
             alt="upload"
-            className="max-w-xs max-h-60"
+            className="w-100 max-h-60 object-cover"
           />
           <button
             type="button"
