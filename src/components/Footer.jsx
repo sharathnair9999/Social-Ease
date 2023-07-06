@@ -15,7 +15,7 @@ const Footer = () => {
       <p className="md:text-xl text-md text-slate-300 text-center">
         Created By{" "}
         <a
-          href="https://sharath-nair9999.netlify.app/"
+          href="https://sharathnair.me/"
           rel="noreferrer"
           target="_blank"
           className="hover:text-slate-50 transition duration-200 text-accent-1-light"
